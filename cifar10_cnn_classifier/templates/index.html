@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIFAR-10 CNN Image Classifier</title>
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.15);
+            --success: #10b981;
+            --border: #334155;
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.4), 0 0 15px var(--primary-glow);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Upload Area */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            background-color: rgba(15, 23, 42, 0.3);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--primary);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .upload-zone:hover .upload-icon {
+            color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .upload-zone p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .upload-zone span {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Preview Area */
+        .preview-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background-color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #preview-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            box-shadow: none;
+        }
+
+        /* Results Display */
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .prediction-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(15, 23, 42, 0.3);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .prediction-class {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.25rem;
+        }
+
+        .prediction-confidence {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .prediction-confidence span {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Probability Bars */
+        .probability-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .prob-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .prob-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .class-name {
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .class-percent {
+            color: var(--text-muted);
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background-color: rgba(15, 23, 42, 0.6);
+            border-radius: 4px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary);
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.1, 0.8, 0.2, 1);
+        }
+
+        .prob-row.top-class .progress-bar-fill {
+            background-color: var(--success);
+        }
+
+        .prob-row.top-class .class-name {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* Placeholder state for Results */
+        .placeholder-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            color: var(--text-muted);
+            text-align: center;
+            gap: 1rem;
+            padding: 4rem 1rem;
+        }
+
+        .placeholder-icon {
+            font-size: 3rem;
+            opacity: 0.4;
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(30, 41, 59, 0.8);
+            border-radius: var(--radius);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CIFAR-10 Image Classifier</h1>
+            <p>Upload any image to classify it using our Convolutional Neural Network (CNN)</p>
+        </header>
+
+        <div class="main-layout">
+            <!-- Left Side: Upload & Image Control -->
+            <div class="card" style="position: relative;">
+                <!-- Loading State overlay -->
+                <div class="loading-overlay" id="loading-overlay">
+                    <div class="spinner"></div>
+                    <p>Running CNN Inference...</p>
+                </div>
+
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    Image Input
+                </div>
+
+                <div class="error-message" id="error-box"></div>
+
+                <!-- Drag & Drop Zone -->
+                <div class="upload-zone" id="drop-zone">
+                    <div class="upload-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <div>
+                        <p>Drag and drop your image here</p>
+                        <p style="margin-top: 0.25rem;">or <span>browse computer</span></p>
+                    </div>
+                    <input type="file" id="file-input" accept="image/*">
+                </div>
+
+                <!-- Image Preview state -->
+                <div class="preview-container" id="preview-container">
+                    <div class="image-wrapper">
+                        <img id="preview-img" src="" alt="Selected Preview">
+                    </div>
+                    <div style="width: 100%;">
+                        <button class="btn" id="btn-classify">Classify Image</button>
+                        <button class="btn btn-secondary" id="btn-change">Select Different Image</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Classification Output -->
+            <div class="card">
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    Classification Results
+                </div>
+
+                <!-- Empty state placeholder -->
+                <div class="placeholder-state" id="results-placeholder">
+                    <div class="placeholder-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <p>Select and classify an image to view predictions</p>
+                </div>
+
+                <!-- Actual Results container -->
+                <div class="results-container" id="results-container" style="display: none;">
+                    <div class="prediction-header">
+                        <div class="prediction-class" id="top-predicted-class">-</div>
+                        <div class="prediction-confidence">Confidence: <span id="top-confidence-value">0.0%</span></div>
+                    </div>
+
+                    <div class="probability-list" id="probability-bars-list">
+                        <!-- Probability rows will be dynamically populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewContainer = document.getElementById('preview-container');
+        const previewImg = document.getElementById('preview-img');
+        const btnClassify = document.getElementById('btn-classify');
+        const btnChange = document.getElementById('btn-change');
+        const resultsPlaceholder = document.getElementById('results-placeholder');
+        const resultsContainer = document.getElementById('results-container');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const errorBox = document.getElementById('error-box');
+        const topClassEl = document.getElementById('top-predicted-class');
+        const topConfEl = document.getElementById('top-confidence-value');
+        const barsListEl = document.getElementById('probability-bars-list');
+
+        let selectedFile = null;
+        const classes = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'];
+
+        // Drag & Drop Handlers
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (!file.type.startsWith('image/')) {
+                showError("Please select a valid image file.");
+                return;
+            }
+            selectedFile = file;
+            errorBox.style.display = 'none';
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                dropZone.style.display = 'none';
+                previewContainer.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        btnChange.addEventListener('click', () => {
+            selectedFile = null;
+            fileInput.value = '';
+            dropZone.style.display = 'flex';
+            previewContainer.style.display = 'none';
+            resetResults();
+        });
+
+        btnClassify.addEventListener('click', () => {
+            if (!selectedFile) return;
+            classifyImage();
+        });
+
+        function showError(msg) {
+            errorBox.textContent = msg;
+            errorBox.style.display = 'block';
+        }
+
+        function resetResults() {
+            resultsPlaceholder.style.display = 'flex';
+            resultsContainer.style.display = 'none';
+        }
+
+        async function classifyImage() {
+            loadingOverlay.style.display = 'flex';
+            errorBox.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Server error occurred during classification.");
+                }
+
+                displayResults(data);
+            } catch (err) {
+                showError(err.message);
+                resetResults();
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        function displayResults(data) {
+            resultsPlaceholder.style.display = 'none';
+            resultsContainer.style.display = 'flex';
+
+            // Set top class and confidence
+            topClassEl.textContent = data.predicted_class;
+            topConfEl.textContent = `${(data.confidence * 100).toFixed(1)}%`;
+
+            // Sort classes by probability to render
+            const probsArray = data.probabilities.map((prob, idx) => ({
+                name: classes[idx],
+                val: prob,
+                isTop: idx === data.class_index
+            })).sort((a, b) => b.val - a.val);
+
+            // Render bars
+            barsListEl.innerHTML = '';
+            probsArray.forEach(item => {
+                const percentageStr = `${(item.val * 100).toFixed(1)}%`;
+                
+                const row = document.createElement('div');
+                row.className = `prob-row ${item.isTop ? 'top-class' : ''}`;
+                
+                row.innerHTML = `
+                    <div class="prob-labels">
+                        <span class="class-name">${item.name}</span>
+                        <span class="class-percent">${percentageStr}</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 0%"></div>
+                    </div>
+                `;
+                
+                barsListEl.appendChild(row);
+                
+                // Trigger transition after append
+                setTimeout(() => {
+                    row.querySelector('.progress-bar-fill').style.width = percentageStr;
+                }, 50);
+            });
+        }
+    </script>
+</body>
+</html>

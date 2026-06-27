@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OncoVision | Skin Cancer Diagnostic System</title>
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Style Sheet -->
+    <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🔬</span>
+                <div class="logo-text">
+                    <h1>OncoVision</h1>
+                    <p>Skin Cancer Diagnostic System</p>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div id="no-model-alert" class="alert alert-warning hidden">
+                ⚠️ <strong>No model weights found!</strong> A pre-trained model for DermaMNIST could not be loaded. Please ensure the weights are trained and cached.
+            </div>
+            
+            <div id="evaluation-container" class="hidden">
+                <div class="grid-2col">
+                    <!-- Model Performance Report -->
+                    <div class="card glass-card">
+                        <h2>Test Set Metrics</h2>
+                        <p class="card-desc">Performance calculated on clean, unseen test images.</p>
+                        
+                        <div class="metric-highlights">
+                            <div class="metric-badge">
+                                <span class="badge-title">Test Accuracy</span>
+                                <span id="eval-accuracy" class="badge-val">0.0%</span>
+                            </div>
+                            <div class="metric-badge">
+                                <span class="badge-title">Macro F1-Score</span>
+                                <span id="eval-f1" class="badge-val">0.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="metrics-table">
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1-Score</th>
+                                        <th>Support</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="metrics-table-body">
+                                    <!-- Will load dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- ROC Curve -->
+                    <div class="card glass-card">
+                        <h2>ROC Curve Analysis</h2>
+                        <div class="image-plot-container">
+                            <img id="roc-plot-img" src="" alt="ROC Curve Plot">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid-2col margin-top">
+                    <!-- Confusion Matrix -->
+                    <div class="card glass-card">
+                        <h2>Confusion Matrix</h2>
+                        <div class="image-plot-container">
+                            <img id="cm-plot-img" src="" alt="Confusion Matrix Plot">
+                        </div>
+                    </div>
+                    
+                    <!-- Prediction / Upload Area -->
+                    <div class="card glass-card">
+                        <h2>Run Diagnostic Inference</h2>
+                        <p class="card-desc">Upload a clinical photograph of the skin lesion to run real-time classification across the 7 disease categories.</p>
+                        
+                        <div class="upload-zone" id="upload-zone">
+                            <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg" class="hidden">
+                            <div class="upload-prompt">
+                                <span class="upload-icon">📤</span>
+                                <p class="upload-title">Drag & Drop Image Here</p>
+                                <p class="upload-subtitle">Supports PNG, JPG (re-scaled automatically)</p>
+                                <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                            </div>
+                        </div>
+
+                        <!-- Selected Image Preview & Check Button -->
+                        <div id="preview-container" class="hidden" style="margin-top: 1rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.25rem; border: 1px solid var(--card-border); border-radius: 12px; background: rgba(0, 0, 0, 0.15);">
+                            <div style="width: 120px; height: 120px; border-radius: 8px; border: 1px solid var(--card-border); overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center;">
+                                <img id="selected-image-preview" src="" alt="Selected Preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            </div>
+                            <button id="btn-check-prediction" class="btn btn-primary" style="width: 100%;">🔍 Check Diagnostic Prediction</button>
+                        </div>
+                        
+                        <!-- Inference Result Container -->
+                        <div id="inference-results" class="inference-results hidden">
+                            <h3>Classification Outcome</h3>
+                            <div class="prediction-result-header">
+                                <div class="prediction-outcome">
+                                    <span class="prediction-label">Prediction:</span>
+                                    <span id="predicted-class-name" class="prediction-val">-</span>
+                                </div>
+                            </div>
+                            <div class="probability-bars" id="probability-bars">
+                                <!-- Horizontal class probability bars go here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            <p>OncoVision Skin Cancer Diagnostic System | Powered by PyTorch & MedMNIST</p>
+        </footer>
+    </div>
+    <!-- Application Logic -->
+    <script src="app.js?v=4"></script>
+</body>
+</html>

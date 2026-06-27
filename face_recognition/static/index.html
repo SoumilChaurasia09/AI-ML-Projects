@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive CNN-based Face Detection and Recognition application using PyTorch, FastAPI, and glassmorphic UI.">
+    <title>Face Detection & Recognition System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-glow"></div>
+                <i class="fa-solid fa-face-smile logo-icon"></i>
+                <span class="logo-text">FaceID</span>
+            </div>
+            
+            <nav class="nav-menu">
+
+                <button class="nav-item active" id="nav-sandbox" onclick="switchTab('sandbox')">
+                    <i class="fa-solid fa-expand"></i>
+                    <span>Sandbox</span>
+                </button>
+                <button class="nav-item" id="nav-register" onclick="switchTab('register')">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Register Face</span>
+                </button>
+
+            </nav>
+            
+            <div class="model-status-widget">
+                <div class="status-indicator" id="sidebar-status-dot"></div>
+                <div class="status-details">
+                    <span class="status-label">CNN Core</span>
+                    <span class="status-value" id="sidebar-status-text">Checking...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="content-header">
+                <div class="header-title">
+                    <h1 id="page-title">CNN Inference Sandbox</h1>
+                    <p id="page-subtitle" class="subtitle">Interactive playground for testing custom CNN detection and recognition.</p>
+                </div>
+                <div class="header-actions">
+                    <span class="badge" id="device-badge"><i class="fa-solid fa-cpu"></i> CPU Mode</span>
+                </div>
+            </header>
+
+
+
+            <!-- Sandbox Tab -->
+            <section id="tab-sandbox" class="tab-content active">
+                <div class="sandbox-layout">
+                    <!-- Left: Control & Display Canvas -->
+                    <div class="glass-card canvas-card">
+                        <video id="webcam-video" style="display:none;" autoplay playsinline></video>
+                        <div class="canvas-controls">
+                            <button class="btn btn-secondary" id="btn-webcam" onclick="toggleWebcam()">
+                                <i class="fa-solid fa-camera"></i> Start Camera
+                            </button>
+                            <button class="btn btn-secondary" id="btn-gen-sample" onclick="getSyntheticSample()">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Face
+                            </button>
+                            <label for="upload-sandbox" class="btn btn-primary">
+                                <i class="fa-solid fa-upload"></i> Upload Image
+                            </label>
+                            <input type="file" id="upload-sandbox" accept="image/*" style="display:none;" onchange="handleSandboxUpload(event)">
+                        </div>
+                        
+                        <div class="canvas-viewport" id="sandbox-viewport">
+                            <canvas id="sandbox-canvas"></canvas>
+                            <div class="scan-effect" id="sandbox-scanner" style="display:none;"></div>
+                            <div class="viewport-placeholder" id="sandbox-placeholder">
+                                <i class="fa-solid fa-camera-retro placeholder-icon"></i>
+                                <p>Generate a synthetic face outline or upload a photo to start CNN inference.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Analysis Panel -->
+                    <div class="glass-card analysis-card">
+                        <h2 class="section-title"><i class="fa-solid fa-gauge-high"></i> CNN Detection Metrics</h2>
+                        
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <span class="lbl">Face Detected:</span>
+                                <span class="val highlighted" id="metric-detected">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="lbl">Confidence:</span>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="metric-conf-bar" style="width: 0%"></div>
+                                </div>
+                                <span class="val" id="metric-confidence">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="lbl">Bounding Box [xmin, ymin, xmax, ymax]:</span>
+                                <span class="val code-font" id="metric-bbox">-</span>
+                            </div>
+                        </div>
+
+                        <hr class="card-divider">
+
+                        <h2 class="section-title"><i class="fa-solid fa-fingerprint"></i> Recognition Signature</h2>
+                        
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <span class="lbl">Identified Person:</span>
+                                <span class="val highlighted name-highlight" id="metric-name">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="lbl">Embedding Distance:</span>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill match-distance" id="metric-dist-bar" style="width: 0%"></div>
+                                </div>
+                                <span class="val" id="metric-distance">-</span>
+                            </div>
+                        </div>
+
+                        <div class="distance-breakdown" id="distance-breakdown-panel">
+                            <h3>Comparison Scores (Euclidean Distance):</h3>
+                            <ul class="dist-list" id="distance-scores-list">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Register Face Tab -->
+            <section id="tab-register" class="tab-content">
+                <div class="register-layout">
+                    <div class="glass-card registration-form-card">
+                        <h2 class="section-title"><i class="fa-solid fa-address-card"></i> Create Identity Profile</h2>
+                        <form id="face-register-form" onsubmit="submitRegistration(event)">
+                            <div class="form-group">
+                                <label for="reg-name" class="form-label">Full Name / Identity Label</label>
+                                <input type="text" id="reg-name" class="form-input" placeholder="e.g. Sophia" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Profile Image Source</label>
+                                <div class="image-source-options">
+                                    <button type="button" class="btn btn-secondary flex-1" onclick="generateRegSynthetic()">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Face Image
+                                    </button>
+                                    <label for="upload-register" class="btn btn-secondary flex-1 text-center">
+                                        <i class="fa-solid fa-upload"></i> Upload Image
+                                    </label>
+                                    <input type="file" id="upload-register" accept="image/*" style="display:none;" onchange="handleRegisterUpload(event)">
+                                </div>
+                            </div>
+
+                            <div class="registration-preview-box">
+                                <canvas id="register-canvas"></canvas>
+                                <div class="viewport-placeholder" id="register-placeholder">
+                                    <i class="fa-solid fa-user-astronaut placeholder-icon"></i>
+                                    <p>Select or generate a profile image</p>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-submit-registration" disabled>
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Register Face Representation
+                            </button>
+                        </form>
+                        
+                        <div id="register-alert" class="alert-box" style="display:none;"></div>
+                    </div>
+
+                    <div class="glass-card info-card">
+                        <h2 class="section-title"><i class="fa-solid fa-circle-info"></i> How Recognition Works</h2>
+                        <div class="info-content">
+                            <p>Unlike standard image classification (which places faces into predetermined categories), this project uses a <strong>Siamese Neural Network</strong> pipeline:</p>
+                            <ol>
+                                <li>
+                                    <strong>Detection</strong>: The custom <code>FaceDetectorCNN</code> localizes the face bounding box.
+                                </li>
+                                <li>
+                                    <strong>Embedding Extraction</strong>: The cropped face is passed through the <code>FaceEmbeddingCNN</code>, extracting a 128-dimensional vector representation.
+                                </li>
+                                <li>
+                                    <strong>Vector Database Search</strong>: The vector is compared against previously registered representations using <em>Euclidean Distance</em>. If the vector lies within a threshold radius (e.g. &lt; 0.65), it registers a match.
+                                </li>
+                            </ol>
+                            <p class="highlight-info-box">
+                                <i class="fa-solid fa-lightbulb"></i> This vector-embedding approach means you can register new faces dynamically without retraining the entire network!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch weights (large binaries - download/train locally)
+weights/
+*.pth
+
+# Local databases and runtime logs
+registered_faces.json
+training_status.json
+training_history.json
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store

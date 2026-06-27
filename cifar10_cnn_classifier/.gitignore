@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch checkpoints
+*.pth
+
+# Dataset folders (Large files)
+data/
+cifar10/
+
+# Temporary and download files
+*.tgz
+*.tar.gz
+test_cifar*
+training_curves.png
+test_images/*_prediction.png
+
+# Environments
+.venv/
+venv/
+ENV/
+
+# VS Code / IDE configs
+.vscode/
+.idea/
+.DS_Store

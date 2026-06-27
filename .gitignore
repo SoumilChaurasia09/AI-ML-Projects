@@ -1,0 +1,26 @@
+# Python compilation cache
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+.project
+.settings/
+
+# Archives & Large files
+*.tgz
+*.zip
+*.tar.gz
+
+# Virtual environment folders
+venv/
+.venv/
+env/
