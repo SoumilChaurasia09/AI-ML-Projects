@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: cancer-detection-dashboard
+    env: python
+    rootDir: cancer_detection
+    buildCommand: pip install -r requirements.txt && python preload_dataset.py
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0

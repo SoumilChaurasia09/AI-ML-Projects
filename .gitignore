@@ -24,3 +24,7 @@ Desktop.ini
 venv/
 .venv/
 env/
+
+# Downloaded datasets
+**/data/
+

@@ -1,3 +1,4 @@
+import os
 import io
 import base64
 import random
@@ -8,6 +9,9 @@ from torch.utils.data import DataLoader
 import medmnist
 from medmnist import INFO, Evaluator
 from PIL import Image
+
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
 def get_dataset_class(dataset_name: str):
     """
@@ -70,9 +74,9 @@ def get_dataloaders(dataset_name: str, batch_size: int = 32, augment: bool = Tru
     DatasetClass = get_dataset_class(dataset_name)
     
     # Load splits
-    train_dataset = DatasetClass(split="train", transform=train_transform, download=True)
-    val_dataset = DatasetClass(split="val", transform=eval_transform, download=True)
-    test_dataset = DatasetClass(split="test", transform=eval_transform, download=True)
+    train_dataset = DatasetClass(split="train", transform=train_transform, download=True, root=DATA_DIR)
+    val_dataset = DatasetClass(split="val", transform=eval_transform, download=True, root=DATA_DIR)
+    test_dataset = DatasetClass(split="test", transform=eval_transform, download=True, root=DATA_DIR)
     
     # Create DataLoaders
     # Note: drop_last=True helps avoid batch-size of 1 for BatchNorm stability if train size % batch_size == 1
@@ -91,7 +95,7 @@ def get_random_samples(dataset_name: str, num_samples: int = 8):
     DatasetClass = get_dataset_class(dataset_name)
     
     # Load dataset without normalized tensors to easily save raw PIL images
-    dataset = DatasetClass(split="train", download=True)
+    dataset = DatasetClass(split="train", download=True, root=DATA_DIR)
     info = INFO[dataset_name]
     labels_map = info["label"]
     
