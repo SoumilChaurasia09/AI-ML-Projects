@@ -27,3 +27,10 @@ services:
     plan: free
     rootDir: cifar10_cnn_classifier
     dockerfilePath: Dockerfile
+
+  - type: web
+    name: vit-bhopal-chatbox
+    env: static
+    plan: free
+    rootDir: university-rag-chatbot
+    publishDir: .
