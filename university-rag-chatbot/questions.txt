@@ -1,0 +1,167 @@
+VIT Bhopal University Admissions ChatBox - Reviewer Questions Guide
+
+This document lists all 50 questions and answers configured in our Admissions ChatBox system. The questions are grouped by category to help you test the RAG system.
+
+Category: Admissions
+
+Q1) What is the minimum percentage required for B.Tech admission?
+Answer: VIT Bhopal University eligibility requires a minimum aggregate of 60% in Physics, Chemistry, and Mathematics (PCM) at the 10+2 (high school) level.
+
+Q2) Which entrance exams are accepted for B.Tech admission?
+Answer: Admission is strictly based on the candidate's rank in the VIT Engineering Entrance Examination (VITEEE) or a qualifying JEE Main percentile (>85% percentile).
+
+Q3) What is the application fee and deadline?
+Answer: The online application fee is 1,500 INR. Applications for the 2026-27 academic year close on August 15, 2026.
+
+Q4) When does counseling and verification begin?
+Answer: Official document audits and counseling sessions for engineering/science branches will begin on August 20, 2026.
+
+Q5) Is there direct admission without entrance exams?
+Answer: No, direct admission is not available for B.Tech programs. All candidates must qualify through VITEEE rank or score above the 85th percentile in JEE Main.
+
+Q6) What is the criteria for NRI/Foreign student admission?
+Answer: NRI and foreign students are eligible for direct admission based on their performance in equivalent qualifying examinations (e.g., SAT scores or high school transcript averages) without taking VITEEE.
+
+Q7) Can I edit my application form after submission?
+Answer: Yes, minor corrections (like spelling errors or updating marks) can be requested through the admissions support portal before the final deadline of August 15, 2026.
+
+Q8) Is there an age limit for B.Tech admission?
+Answer: Yes, candidates whose date of birth falls on or after July 1, 2004, are eligible to apply for B.Tech admissions for the academic year 2026-27.
+
+Q9) Is there any reservation for state candidates (Madhya Pradesh domicile)?
+Answer: Yes, VIT Bhopal University reserves a portion of seats for candidates residing in Madhya Pradesh. MP domicile certificates must be submitted during document verification.
+
+Q10) Can I apply for B.Tech admission if my 12th board results are awaited?
+Answer: Yes, candidates awaiting board results can apply and register for counseling. Final admission is subject to meeting the 60% PCM eligibility once results are announced.
+
+Q11) How do I check my selection status for counseling?
+Answer: Selected candidates will receive official email and SMS notifications. Selection ranks and counselor allocation links can be viewed in the student login dashboard.
+
+
+Category: Fees
+
+Q12) What is the fee structure for B.Tech in Computer Science & Engineering?
+Answer: The annual tuition fee for B.Tech in CSE (and B.Tech in Data Science & AI) is 220,000 INR per year, which is paid as 110,000 INR per semester.
+
+Q13) What is the cost of Electronics & Communication (ECE) branch?
+Answer: The annual tuition fee for ECE (and B.Tech in Robotics) is 200,000 INR per year (or 100,000 INR per semester).
+
+Q14) Are there any scholarships available for top rankers?
+Answer: Yes, Rank 1-10 in VITEEE get a 100% tuition fee waiver; Rank 11-100 get a 50% waiver; and students scoring >96% in CBSE boards receive a 25% tuition concession.
+
+Q15) Can I pay tuition fees in installments?
+Answer: Yes, financial aid is available for low-income candidates, which permits paying the annual fees in up to four interest-free installments.
+
+Q16) What is the tuition fee for MBA in Business Analytics?
+Answer: The annual tuition fee for the MBA in Business Analytics is 320,000 INR, which is paid as 160,000 INR per semester.
+
+Q17) Is the hostel fee refundable if I withdraw my admission?
+Answer: Yes, hostel and tuition fees are fully refundable (minus a small processing charge of 1,000 INR) if the withdrawal is requested before the start of classes.
+
+Q18) What is the tuition fee for M.Tech programs?
+Answer: The annual tuition fee for M.Tech in Cybersecurity or VLSI Design is 150,000 INR per year (or 75,000 INR per semester).
+
+Q19) Is there any discount for female students?
+Answer: Yes, under the university's diversity initiative, female students receive a special 10% concession on hostel room rent across all categories.
+
+Q20) Are there any administrative or registration charges in the first year?
+Answer: Yes, a one-time non-refundable admission registration fee of 10,000 INR is charged at the time of seat acceptance.
+
+Q21) What is the fee for the examination per semester?
+Answer: Semester examination fees are 5,000 INR per semester, which must be paid online prior to the release of hall tickets.
+
+
+Category: Hostel
+
+Q22) What is the cost of a single sharing AC room in the hostel?
+Answer: A Single AC Room with an attached washroom costs 180,000 INR per year. It includes high-speed Wi-Fi, laundry, mess dining, and utilities.
+
+Q23) What are the prices for shared rooms in the hostel?
+Answer: A Double Sharing AC room costs 140,000 INR per year; a Double Sharing Non-AC room costs 100,000 INR per year; and a Triple Sharing Non-AC room costs 80,000 INR per year.
+
+Q24) Is mess food included in the hostel fee, and what is the menu?
+Answer: Yes, a mandatory 4-meal daily mess subscription is included, serving North/South Indian vegetarian and non-vegetarian options (breakfast, lunch, snacks, dinner).
+
+Q25) What are the sports and gym facilities in hostels?
+Answer: Hostels feature fully-equipped modern indoor gymnasiums, sports courts for basketball, badminton, tennis, and 24/7 access to running tracks.
+
+Q26) What is the cost of a double sharing Non-AC room?
+Answer: A Double Sharing Non-AC room costs 100,000 INR per year. This includes laundry service, high-speed Wi-Fi, and 4 meals daily in the mess.
+
+Q27) What is the cost of a triple sharing Non-AC room?
+Answer: A Triple Sharing Non-AC room is the most economical option, costing 80,000 INR per year, which includes all mess meals and campus services.
+
+Q28) Is laundry service included in the hostel fee?
+Answer: Yes, professional steam laundry and washing cycles (up to 40 items of clothing per month) are included in the hostel fee packages.
+
+Q29) What is the cost of a double sharing AC room in the hostel?
+Answer: A Double Sharing AC room costs 140,000 INR per year. It includes high-speed Wi-Fi, laundry service, and 4 daily mess meals.
+
+Q30) Are guests or parents allowed to stay in the university hostel?
+Answer: Parents can stay in the university guest house for a maximum of 2 days, subject to availability and nominal charges (1,500 INR/day). Hostels do not allow guests.
+
+Q31) What is the penalty for damaging hostel property?
+Answer: Any damage to room furniture, electrical fittings, or sanitaryware will result in fine recovery based on repair costs and disciplinary warnings.
+
+
+Category: Academics
+
+Q32) How many credits are required to graduate in B.Tech?
+Answer: Under the Choice-Based Credit System (CBCS), students must successfully complete 160 credits to graduate with a B.Tech degree.
+
+Q33) Can I take minor courses alongside my major?
+Answer: Yes, students can take minor specializations (requiring 18 additional credits) in fields like Fintech, Robotics, or Creative Design.
+
+Q34) What is the Choice-Based Credit System (CBCS)?
+Answer: CBCS allows students to choose their own courses, theoretical subjects, practical labs, and electives from a diverse pool to complete their 160-credit graduation requirement.
+
+Q35) What are the core subjects in Computer Science (CSE)?
+Answer: Core subjects include Data Structures, Design & Analysis of Algorithms, Software Engineering, Database Systems, Cloud Computing, and Machine Learning.
+
+Q36) How many credits does a minor specialization require?
+Answer: Minor specializations (in fields like Fintech, Robotics, or Creative Design) require 18 additional credits alongside your primary major.
+
+Q37) Can I request a branch change after the first year?
+Answer: Yes, branch migration is permitted at the end of the second semester for top-performing students who have maintained a CGPA above 8.5 with no backlogs.
+
+Q38) What electives are offered in B.Tech Computer Science?
+Answer: Electives include Internet of Things (IoT), Big Data Analytics, Blockchain Technologies, Deep Learning, Mobile App Development, and Cyber Forensics.
+
+Q39) What is the minimum CGPA required to avoid academic probation?
+Answer: Students must maintain a Cumulative Grade Point Average (CGPA) above 5.0 to stay in good academic standing and avoid probation.
+
+Q40) How are grades calculated in the Choice-Based Credit System?
+Answer: Grades are awarded on a 10-point scale: S (10 points), A (9 points), B (8 points), C (7 points), D (6 points), E (5 points), and F (0 points/Fail).
+
+
+Category: Placements
+
+Q41) What is the placement percentage and average salary package?
+Answer: VIT Bhopal University has a 98.6% placement rate, with an average CTC of 8.5 Lakhs INR per year. The highest package reached 44 Lakhs INR offered by Microsoft.
+
+Q42) Is an internship mandatory for engineering students?
+Answer: Yes, a compulsory six-month internship in the 7th or 8th semester is required. The stipend ranges from 20,000 INR to 80,000 INR per month.
+
+Q43) Who are the top recruiters at VIT Bhopal?
+Answer: Top recruiting companies visiting the campus include Microsoft, Google, Amazon, NVIDIA, Cognizant, and Deloitte. Microsoft offered the highest package of 44 Lakhs INR.
+
+Q44) What is the highest salary package offered, and by which company?
+Answer: The highest salary package recorded is 44 Lakhs INR per year, offered by Microsoft to a B.Tech Computer Science student.
+
+Q45) What is the average stipend for six-month internships?
+Answer: The average monthly stipend for engineering students ranges from 20,000 INR to 80,000 INR per month, depending on the recruiter.
+
+Q46) Is there a placement cell for student training?
+Answer: Yes, the Corporate Relations Cell runs mandatory aptitude training, coding bootcamps, and mock interview drills starting from the 5th semester.
+
+Q47) Does the university guarantee placements for all students?
+Answer: While the placement rate is exceptionally high at 98.6%, placements depend on academic performance, cleared backlogs, and clearing recruiter interview rounds.
+
+Q48) Can I apply for placement drives if I have active backlogs?
+Answer: Most top recruiters require zero active backlogs. However, some companies permit candidates with up to one active backlog to participate in selection rounds.
+
+Q49) Are there mock interviews conducted before actual placement drives?
+Answer: Yes, the Corporate Relations Cell runs compulsory mock technical interviews, HR interviews, and resume reviews starting from the 6th semester.
+
+Q50) Who guides students for off-campus placement opportunities?
+Answer: The Corporate Relations Cell provides off-campus circulars, verification assistance, and mock interview support for students applying independently.

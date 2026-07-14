@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineMinds AI - Conversational RAG Movie Recommender</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="logo">
+      <span>🎬</span> CineMinds <span style="font-weight: 300; font-size: 16px; margin-left: -4px;">AI</span>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Status Badge to indicate Local vs Python Backend mode -->
+      <div id="backend-status" class="header-btn" style="cursor: default;">
+        <span class="status-indicator" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 5px;"></span>
+        Local RAG Engine
+      </div>
+      
+      <!-- Settings Modal Button -->
+      <button id="settings-btn" class="header-btn">
+        <span>⚙️</span> API Settings
+      </button>
+    </div>
+  </header>
+
+  <!-- App Main Framework -->
+  <div class="app-container">
+    
+    <!-- Left Dashboard / Visualizer / Analytics Panel -->
+    <main class="main-content">
+      
+      <!-- Tabs Switcher -->
+      <div class="tabs-container">
+        <button id="tab-home" class="tab-btn active">🍿 Home Dashboard</button>
+        <button id="tab-vector" class="tab-btn">🌌 Neural Vector Map</button>
+        <button id="tab-math" class="tab-btn">🧮 Math & Analytics</button>
+      </div>
+
+      <!-- Tab Content: Home Dashboard -->
+      <div id="panel-home" class="tab-panel active">
+        
+        <!-- Hero Movie Banner -->
+        <section id="hero-banner" class="hero-banner">
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="featured-tag">FEATURED MATCH</span>
+            <h1 id="hero-title" class="hero-title">Whiplash</h1>
+            <div class="hero-meta">
+              <span id="hero-year">2014</span>
+              <span>•</span>
+              <span id="hero-duration">1h 46m</span>
+              <span>•</span>
+              <span id="hero-rating" class="rating-badge">★ 8.5</span>
+            </div>
+            <p id="hero-desc" class="hero-desc">
+              A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing to realize a student's potential.
+            </p>
+            <div class="hero-buttons">
+              <button id="hero-btn-more" class="header-btn accent">🔍 Analyze AI Match</button>
+              <button id="hero-btn-trailer" class="header-btn">🎥 Play Trailer</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Movie Rows -->
+        <!-- Row 1: Recommendations -->
+        <section class="movie-section">
+          <h2 class="section-title">
+            Recommended For You <span>• Tailored from your likes & dislikes</span>
+          </h2>
+          <div class="movies-slider-container">
+            <div id="row-recommendations" class="movies-slider">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Row 2: Sci-Fi & Adventure -->
+        <section class="movie-section">
+          <h2 class="section-title">Sci-Fi & Cosmic Horizons</h2>
+          <div class="movies-slider-container">
+            <div id="row-scifi" class="movies-slider">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Row 3: Thrillers & Drama -->
+        <section class="movie-section">
+          <h2 class="section-title">Intense Thrillers & Gripping Crime</h2>
+          <div class="movies-slider-container">
+            <div id="row-thriller" class="movies-slider">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Row 4: Comedy & Romance -->
+        <section class="movie-section">
+          <h2 class="section-title">Feel-Good Comedies & Whimsical Romance</h2>
+          <div class="movies-slider-container">
+            <div id="row-comedy" class="movies-slider">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Tab Content: Neural Vector Space Visualizer -->
+      <div id="panel-vector" class="tab-panel">
+        <div class="vector-panel-content">
+          <!-- Canvas Visualizer container -->
+          <div class="canvas-container">
+            <div class="canvas-overlay">
+              <h4>Neural Vector Space Map</h4>
+              <p>This 2D projection plots our catalog of movies. Circles represent films, clustered by primary genre.</p>
+              <p style="margin-top: 8px; color: var(--accent-pink); font-weight: 700;">
+                💡 Send a message in the RAG Chat sidebar on the right! You'll see a Query Vector node shoot connection beams to relevant movie nodes.
+              </p>
+            </div>
+            <canvas id="vectorCanvas"></canvas>
+          </div>
+
+          <!-- Vector space metadata sidebar -->
+          <aside class="vector-sidebar">
+            <div class="math-card">
+              <h3 class="math-title">🌐 Semantic Vector Mapping</h3>
+              <p style="font-size: 11px; line-height: 1.5; color: var(--text-secondary);">
+                Every movie description is vectorized using term frequencies weighted by Inverse Document Frequency (TF-IDF). Words like <em>"space"</em>, <em>"dreams"</em>, or <em>"crime"</em> form coordinates in a multi-dimensional semantic space.
+              </p>
+            </div>
+
+            <div class="math-card">
+              <h3 class="math-title" style="color: var(--accent-pink);">🎯 Retrieved Document Chunks</h3>
+              <div id="retrieved-list" style="display: flex; flex-direction: column; gap: 10px; font-size: 11px; color: var(--text-secondary); margin-top: 8px;">
+                <p style="font-style: italic;">No query executed yet. Submit a message in the chat to retrieve document embeddings.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Tab Content: Mathematical Analytics -->
+      <div id="panel-math" class="tab-panel" style="padding: 20px 40px;">
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px;">Mathematical Formulation & RAG Explainer</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          
+          <div class="math-card">
+            <h3 class="math-title">⚡ 1. Cosine Similarity Vector Search</h3>
+            <p style="font-size: 12px; line-height: 1.6; margin-bottom: 12px; color: var(--text-secondary);">
+              Relevance between a user's prompt query vector \(Q\) and a movie document vector \(D\) is computed as the cosine of the angle between them. Since vectors are normalized to unit length (\(\|Q\| = \|D\| = 1\)), the formula simplifies to a dot product:
+            </p>
+            <div class="math-formula">
+              CosineSim(Q, D) = Q • D = Σ (q_i * d_i)
+            </div>
+            <p style="font-size: 11px; line-height: 1.5; color: var(--text-muted);">
+              Where \(q_i\) is the TF-IDF weight of word \(i\) in the search query, and \(d_i\) is the TF-IDF weight of the same word in the movie description.
+            </p>
+          </div>
+
+          <div class="math-card">
+            <h3 class="math-title" style="color: var(--accent-pink);">⚡ 2. User Taste Profiling</h3>
+            <p style="font-size: 12px; line-height: 1.6; margin-bottom: 12px; color: var(--text-secondary);">
+              We build a user preference vector \(U\) by aggregating vectors of liked movies and subtracting disliked movie vectors. 
+            </p>
+            <div class="math-formula">
+              U = (1/N) * Σ D_liked - (0.3/M) * Σ D_disliked
+            </div>
+            <p style="font-size: 11px; line-height: 1.5; color: var(--text-muted);">
+              We then rank unviewed movies in the catalog by computing \(CosineSim(U, D_{unviewed})\). The dashboard updates your "Recommended for You" row in real-time as you click Like/Dislike.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="math-card" style="margin-top: 20px;">
+          <h3 class="math-title" style="color: var(--accent-blue);">📊 Active Query Vector Decomposition</h3>
+          <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">
+            Here is the step-by-step mathematical trace of the last executed query vector matching:
+          </p>
+          <div id="math-trace-details">
+            <p style="font-size: 12px; font-style: italic; color: var(--text-muted);">No active query matches traced yet. Talk to the chatbot to trigger vector decomposition.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Right Sidebar Panel: RAG Conversation Co-pilot -->
+    <aside class="sidebar-panel">
+      <div class="sidebar-header">
+        <div>
+          <h2 class="sidebar-title">💬 CineMinds RAG Copilot</h2>
+          <span id="rag-mode-subtitle" class="sidebar-subtitle">Offline Heuristics Mode</span>
+        </div>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="chat-messages-container" class="chat-container">
+        <!-- Messages appended dynamically -->
+      </div>
+
+      <!-- Chat input control -->
+      <div class="chat-input-area">
+        <div class="chat-input-wrapper">
+          <input id="chat-input-field" class="chat-input" type="text" placeholder="Explain your mood or search plotlines..." autocomplete="off">
+          <button id="chat-send-btn" class="chat-send-btn">
+            <span>➔</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Modal: Movie Details & Match Analysis -->
+  <div id="movie-details-modal" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeMovieDetailsModal()">✕</button>
+      
+      <!-- Backdrop Gradient Panel -->
+      <div id="modal-header-panel" class="modal-header">
+        <div class="modal-header-overlay"></div>
+        <div class="modal-header-content">
+          <h2 id="modal-movie-title" style="font-size: 32px; font-weight: 800;">Inception</h2>
+          <p id="modal-movie-director" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Directed by Christopher Nolan</p>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        
+        <div class="modal-grid">
+          <!-- Left Column: Details -->
+          <div>
+            <div id="modal-movie-tagline" class="modal-tagline">"Your mind is the scene of the crime."</div>
+            
+            <div class="modal-details-title">Synopsis</div>
+            <p id="modal-movie-description" style="font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 20px;">
+              A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.
+            </p>
+
+            <div class="modal-details-title">Cast Members</div>
+            <div id="modal-movie-cast" class="modal-cast-list">Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page</div>
+
+            <!-- Like / Dislike Interaction buttons -->
+            <div class="modal-interaction">
+              <button id="modal-like-btn" class="action-btn">
+                <span>👍</span> Like Movie
+              </button>
+              <button id="modal-dislike-btn" class="action-btn">
+                <span>👎</span> Dislike Movie
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Metadata details -->
+          <div>
+            <div class="modal-details-title">Rating</div>
+            <div id="modal-movie-rating" style="font-size: 20px; font-weight: 800; color: #f59e0b; margin-bottom: 15px;">★ 8.8</div>
+
+            <div class="modal-details-title">Year & Duration</div>
+            <p id="modal-movie-meta" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">2010 | 2h 28m</p>
+
+            <div class="modal-details-title">Genres</div>
+            <div id="modal-movie-genres" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;">
+              <!-- Dynamically populated tags -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Content-Based Similarity recommendations -->
+        <div style="margin-top: 30px; border-top: var(--glass-border); padding-top: 25px;">
+          <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+            <span>✨</span> More Like This (Content Similarity)
+          </h3>
+          <div id="modal-similar-list" class="similar-grid">
+            <!-- Dynamically populated mini cards -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: API Settings Configuration -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-box" style="width: 450px;">
+      <button class="modal-close" id="settings-close-btn">✕</button>
+      
+      <div style="padding: 30px;">
+        <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+          <span>⚙️</span> CineMinds AI Settings
+        </h2>
+        
+        <!-- Gemini API input -->
+        <div class="settings-input-group">
+          <label class="settings-label" for="settings-api-key">Gemini API Key</label>
+          <input id="settings-api-key" class="settings-input" type="password" placeholder="Enter your Gemini API key (AIzaSy...)">
+          <p class="settings-info">
+            Enter your key to unlock live, human-like RAG conversations. Your key is stored locally in your browser's <code>localStorage</code> and is sent directly to Google APIs.
+          </p>
+          <p class="settings-info" style="margin-top: 4px;">
+            Don't have an API key? You can get one for free at the <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a>.
+          </p>
+        </div>
+
+        <!-- Mode display information -->
+        <div style="margin-bottom: 25px; background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 6px; border: var(--glass-border);">
+          <div style="font-size: 12px; font-weight: 700; color: #10b981; margin-bottom: 4px;">Current Mode: Client-Side (Fallback)</div>
+          <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.4;">
+            If no API key is set, the chat co-pilot uses a heuristic-based response generator matching keyword tags offline.
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button id="settings-reset-btn" class="action-btn">Reset</button>
+          <button id="settings-save-btn" class="header-btn accent" style="padding: 10px 20px; border-radius: 8px;">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data/movies.js"></script>
+  <script src="js/recommender.js"></script>
+  <script src="js/visualizer.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/app.js"></script>
+  
+  <!-- LaTeX Math Rendering script -->
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

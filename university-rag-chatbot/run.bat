@@ -1,0 +1,3 @@
+@echo off
+echo Opening Apex University RAG Chatbox in your default web browser...
+start index.html

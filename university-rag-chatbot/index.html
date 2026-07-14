@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIT Bhopal University - Admissions RAG Chatbot Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- 1. Top Dashboard Header -->
+  <header class="dashboard-header">
+    <div class="brand-section">
+      <span class="brand-logo">🎓</span>
+      <div class="brand-title">
+        <h1>VIT Bhopal University</h1>
+        <p>Admissions RAG Portal v1.2</p>
+      </div>
+    </div>
+    
+    <div class="header-controls">
+      <div class="status-indicator">
+        <div class="indicator-dot" id="system-dot"></div>
+        <span id="system-label">RAG DATABASE: UNINDEXED</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Main Dashboard Split Layout -->
+  <main class="dashboard-grid">
+    
+    <!-- Left Section: Corpus, Dataset and Training tabs -->
+    <section class="left-panel">
+      <nav class="panel-tabs-bar">
+        <button class="tab-btn active" data-tab="corpus">📚 Prospectus</button>
+        <button class="tab-btn" data-tab="dataset">📋 Dataset Explorer</button>
+      </nav>
+      
+      <div class="panel-content">
+        
+        <!-- Tab 1: Raw document prospectus text viewer -->
+        <div class="tab-pane active" id="corpus-pane">
+          <div class="corpus-container">
+            <div class="corpus-doc-header">
+              <span class="corpus-title">VIT Bhopal University Academic Handbook 2026-27</span>
+              <span class="corpus-tag">document.txt</span>
+            </div>
+            <div class="corpus-scroller">
+              <div class="corpus-text" id="corpus-doc-text">
+                Loading prospectus document...
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tab 2: QA Dataset Explorer -->
+        <div class="tab-pane" id="dataset-pane">
+          <div class="dataset-container">
+            <div class="table-controls">
+              <input type="text" class="search-input" id="search-field" placeholder="Search QA training dataset...">
+              <select class="category-filter" id="category-filter">
+                <option value="all">All Categories</option>
+              </select>
+            </div>
+            <div class="dataset-table-wrapper">
+              <table class="qa-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Question</th>
+                    <th>Target Answer</th>
+                    <th style="text-align: right;">Category</th>
+                  </tr>
+                </thead>
+                <tbody id="qa-table-body">
+                  <!-- Javascript dynamic table rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        
+      </div>
+    </section>
+    
+    <!-- Right Section: Interactive counselor Chat Interface -->
+    <section class="right-panel">
+      <div class="chat-container">
+        
+        <!-- Counselor Profile Bar -->
+        <div class="counselor-profile">
+          <div class="profile-info">
+            <div class="avatar-sphere">🤖</div>
+            <div class="profile-meta">
+              <h2>VIT Bhopal ChatBox</h2>
+              <p>● Online Admissions Assistant</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Chat history scroller bubbles -->
+        <div class="chat-history" id="chat-history">
+          <!-- Bubbles added dynamically -->
+        </div>
+        
+        <!-- suggested chips row for reviewer -->
+        <div class="suggestions-panel">
+          <div class="suggestions-title">Reviewer Quick-Queries</div>
+          <div class="suggestions-categories" id="suggestions-categories" style="display: flex; gap: 6px; margin-bottom: 8px; padding-bottom: 4px; overflow-x: auto;">
+            <!-- Category type selector buttons -->
+          </div>
+          <div class="suggestions-chips" id="suggestions-chips">
+            <!-- Suggested chips mapped -->
+          </div>
+        </div>
+        
+        <!-- Input Textarea bar -->
+        <div class="chat-input-bar">
+          <div class="input-wrapper">
+            <textarea class="chat-input-field" id="chat-input" placeholder="Ask about fees, eligibility, placements, hostels..." maxlength="1000"></textarea>
+            <div class="char-counter" id="char-counter">0 / 1000</div>
+          </div>
+          <button class="btn-send" id="btn-send" disabled>➔</button>
+        </div>
+        
+      </div>
+      
+      <!-- Collapsible Bottom Drawer for RAG Pipeline Inspection -->
+      <div class="pipeline-drawer" id="pipeline-drawer">
+        <div class="drawer-trigger-bar" id="drawer-trigger">
+          <div class="drawer-title">
+            <span>🔎</span> RAG Pipeline Inspector
+          </div>
+          <div class="drawer-meta-peek">
+            <span id="drawer-query-peek">Query: None</span> &bull; 
+            <span id="drawer-matches-count">0 chunks retrieved</span>
+          </div>
+          <span class="drawer-arrow">▲</span>
+        </div>
+        
+        <div class="drawer-body-scroller">
+          
+          <div class="pipeline-pane">
+            <div class="pipeline-sub-card">
+              <h4>1. Tokenized Query Array</h4>
+              <div class="tokens-list" id="pipeline-tokens">
+                <span class="token-badge" style="opacity: 0.5;">Empty Tokens</span>
+              </div>
+            </div>
+            
+            <div class="pipeline-sub-card" style="flex: 1; min-height: 140px; display: flex; flex-direction: column;">
+              <h4>2. Cosine Similarity Rankings</h4>
+              <div class="pipeline-table-wrapper">
+                <table class="pipeline-table">
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Score</th>
+                      <th>Category</th>
+                      <th>Chunk Preview</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pipeline-rank-table-body">
+                    <tr>
+                      <td colspan="4" style="text-align: center; color: var(--text-dim); padding: 12px;">No queries run yet.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pipeline-pane">
+            <div class="pipeline-sub-card" style="height: 100%; display: flex; flex-direction: column;">
+              <h4>3. LLM Prompt Context Payload</h4>
+              <textarea class="pipeline-prompt-field" id="pipeline-prompt-text" readonly placeholder="System instruction prompts and retrieved matching content chunks will be compiled here..."></textarea>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </section>
+  </main>
+
+
+
+  <!-- Loading data, RAG Engine script then App controller -->
+  <script src="dataset/data.js"></script>
+  <script src="rag.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

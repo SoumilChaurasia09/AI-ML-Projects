@@ -1,0 +1,33 @@
+name: Scheduled Publish
+
+on:
+  schedule:
+    # UTC Time: July 11th at 06:30 AM (equivalent to 12:00 PM IST)
+    # Adjust this cron pattern as needed (Minute Hour Day Month DayOfWeek)
+    - cron: '30 6 11 7 *'
+  workflow_dispatch: # Allows you to manually trigger the publishing in one click
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Gives the Action permission to push to your repository
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Configure Git Author
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Publish to main branch
+        run: |
+          # Checkout/create local main branch tracking develop
+          git checkout -b main
+          
+          # Force push to main branch to trigger deployment / public release
+          git push -f origin main

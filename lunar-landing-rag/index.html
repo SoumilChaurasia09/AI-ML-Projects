@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Apollo Lunar Lander Simulation and interactive client-side Retrieval-Augmented Generation (RAG) dashboard. Learn about landing physics, spacecraft specifications, and historical flight data.">
+  <title>Apollo L.E.M. Guidance Command & RAG Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Mission Control Header -->
+  <header>
+    <div class="brand">
+      <div class="logo-icon" id="logoIcon" aria-hidden="true"></div>
+      <h1>APOLLO L.E.M. MISSION CONTROL</h1>
+    </div>
+    <div class="header-status">
+      <div class="status-indicator">
+        <span class="indicator-dot" id="systemIndicatorDot"></span>
+        <span id="systemIndicatorLabel">AGMC CO-PILOT: ACTIVE</span>
+      </div>
+      <button class="api-settings-btn" id="openSettingsBtn" title="Configure AI Models and API Keys">
+        [ API CONFIG ]
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Grid Dashboard Layout -->
+  <main class="dashboard-container">
+    
+    <!-- Left Section: Flight Simulator and HUD Telemetry -->
+    <section class="simulation-bay" aria-label="Flight Simulation Bay">
+      
+      <!-- Canvas Wrapper with CRT Scanline Effect -->
+      <div class="canvas-container" id="canvasContainer">
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        
+        <!-- Interactive Game Screen Overlay (Reset/Relaunch Screen) -->
+        <div id="gameOverlay" class="game-screen-overlay">
+          <div class="overlay-card">
+            <h2 id="overlayTitle">MISSION STATUS</h2>
+            <p id="overlayMessage">Mission termination telemetry details...</p>
+            <button id="overlayResetBtn" class="btn-primary" style="margin-top: 12px; padding: 10px 20px; font-size: 0.85rem;">RELAUNCH SPACECRAFT</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Telemetry Scrolling Graph -->
+      <div class="chart-container" style="position: relative; width: 100%; height: 75px; background: #0c101d; border: 1px solid var(--border-cyan); border-radius: 8px; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); margin-top: 10px;">
+        <canvas id="chartCanvas" width="600" height="75"></canvas>
+      </div>
+
+      <!-- Keyboard Instructions Hint -->
+      <div class="kbd-hint">
+        Flight Controls: <span class="kbd-key">W</span> / <span class="kbd-key">↑</span> Thrust &bull; <span class="kbd-key">A</span>/<span class="kbd-key">D</span> / <span class="kbd-key">←</span>/<span class="kbd-key">→</span> Attitude Rotation
+      </div>
+
+      <!-- Telemetry HUD Gauges Grid -->
+      <div class="hud-console" id="hudConsole" role="region" aria-label="Telemetry HUD Dials">
+        
+        <!-- Altitude Gauge -->
+        <div class="hud-card" id="hudAltitudeCard">
+          <div class="hud-label">Altitude</div>
+          <div class="hud-value" id="hudAltitude">0.0 m</div>
+          <div class="hud-progress-bar">
+            <div class="hud-progress-fill" id="fillAltitude" style="width: 100%"></div>
+          </div>
+        </div>
+
+        <!-- Fuel Gauge -->
+        <div class="hud-card" id="hudFuelCard">
+          <div class="hud-label">Fuel</div>
+          <div class="hud-value" id="hudFuel">100.0%</div>
+          <div class="hud-progress-bar">
+            <div class="hud-progress-fill" id="fillFuel" style="width: 100%"></div>
+          </div>
+        </div>
+
+        <!-- Vertical Velocity Gauge -->
+        <div class="hud-card" id="hudVspeedCard">
+          <div class="hud-label">V-Speed (Vz)</div>
+          <div class="hud-value" id="hudVspeed">0.0 m/s</div>
+          <div class="hud-progress-bar">
+            <div class="hud-progress-fill" id="fillVspeed" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Horizontal Velocity Gauge -->
+        <div class="hud-card" id="hudHspeedCard">
+          <div class="hud-label">H-Speed (Vx)</div>
+          <div class="hud-value" id="hudHspeed">0.0 m/s</div>
+          <div class="hud-progress-bar">
+            <div class="hud-progress-fill" id="fillHspeed" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Tilt Attitude Angle -->
+        <div class="hud-card" id="hudTiltCard">
+          <div class="hud-label">Attitude Tilt</div>
+          <div class="hud-value" id="hudTilt">0.0°</div>
+          <div class="hud-progress-bar">
+            <div class="hud-progress-fill" id="fillTilt" style="width: 0%"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Flight Simulator Control Action Bar -->
+      <div class="sim-controls-bar" style="gap:10px; flex-wrap:wrap;">
+        <div class="flight-status-text">
+          <span>Status:</span>
+          <span class="status-badge badge-flying" id="flightStatusBadge">Ready</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label for="envSelect" style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase; font-family:'Fira Code', monospace;">Target:</label>
+          <select id="envSelect" class="form-input" style="padding:4px 8px; font-size:0.75rem; width:140px; background:rgba(9,13,26,0.8); border:1px solid var(--border-cyan); border-radius:4px; color:var(--neon-cyan); outline:none; cursor:pointer;">
+            <option value="moon" selected>Moon (1.62 m/s²)</option>
+            <option value="mars">Mars (3.71 m/s²)</option>
+            <option value="earth">Earth (9.81 m/s²)</option>
+            <option value="bennu">Bennu (0.02 m/s²)</option>
+          </select>
+        </div>
+        <div class="sim-buttons">
+          <button class="btn-secondary" id="muteAudioBtn" title="Toggle audio sound effects">MUTE</button>
+          <button class="btn-primary" id="resetLanderBtn">RESET</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Right Section: RAG Mission Guidance and Diagnostic Center -->
+    <section class="panel rag-panel" aria-label="RAG Guidance Center">
+      
+      <!-- Multi Tab Navigation Header -->
+      <nav class="panel-tabs">
+        <button class="tab-btn active" id="tabAssistantBtn" data-pane="paneAssistant">Mission Assistant</button>
+        <button class="tab-btn" id="tabPipelineBtn" data-pane="panePipeline">RAG Pipeline Explorer</button>
+        <button class="tab-btn" id="tabDocsBtn" data-pane="paneDocs">Mission Archives</button>
+      </nav>
+
+      <!-- Panel Interactive Content Area -->
+      <div class="tab-content">
+        
+        <!-- Pane 1: Mission Assistant Chat Interface -->
+        <div class="tab-pane active" id="paneAssistant">
+          <div class="chat-container">
+            
+            <!-- Chat Scroll Area -->
+            <div class="chat-history" id="chatHistory" role="log">
+              <!-- Initial Assistant Hello Message -->
+              <div class="chat-message assistant">
+                <div class="msg-header">
+                  <span>Apollo Guidance Computer (AGMC) v1.1</span>
+                  <span>SYSTEM ONLINE</span>
+                </div>
+                <div class="msg-body">
+                  <p>Welcome, pilot. I am your Apollo Guidance Mission Computer (AGMC) running Retrieval-Augmented Generation (RAG).</p>
+                  <p>I monitor your simulation logs and index flight archives. You can query me on:</p>
+                  <ul>
+                    <li>Lander specifications (propellant, thrusters, descent stages).</li>
+                    <li>Physics (gravitational constraints, atmospheric density).</li>
+                    <li>Landing guidelines and game controls.</li>
+                    <li><strong>Your simulation performance</strong>: Try landing (or crash) and ask: <em>"Why did I crash?"</em> or <em>"Analyze my flight"</em>.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Context Peek Indicator (highlights top RAG retrieval match) -->
+            <div class="context-peek" id="contextPeek" title="Click to view full RAG document breakdown">
+              <div class="peek-left">
+                <span class="match-count" id="contextPeekCount">0 chunks</span>
+                <span id="contextPeekDoc">No search context loaded</span>
+              </div>
+              <span id="contextPeekScore" class="match-score">0.00</span>
+            </div>
+
+            <!-- Message Input form -->
+            <form class="chat-input-bar" id="chatForm">
+              <input type="text" class="chat-input" id="chatInput" autocomplete="off" placeholder="Ask AGMC (e.g. 'What fuel does the lander use?', 'Why did I crash?')..." aria-label="Chat input field">
+              <button type="submit" class="btn-send" id="sendMsgBtn" aria-label="Send message">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </form>
+
+          </div>
+        </div>
+
+        <!-- Pane 2: RAG Pipeline Step Explorer -->
+        <div class="tab-pane" id="panePipeline">
+          <div class="pipeline-container" id="pipelineContainer">
+            
+            <!-- RAG Settings: Chunking Parameter Tuner -->
+            <article class="pipeline-step" style="border-color: rgba(56,189,248,0.2);">
+              <div class="step-header">
+                <span class="step-num">RAG Settings</span>
+                <h3 class="step-title">Database Chunking Tuner</h3>
+              </div>
+              <div class="step-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 6px;">
+                <div class="form-group">
+                  <label for="sliderChunkSize" class="form-label" style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                    <span>Chunk Size:</span>
+                    <span id="labelChunkSize" style="color:var(--neon-cyan);">2 sentences</span>
+                  </label>
+                  <input type="range" id="sliderChunkSize" min="1" max="5" value="2" step="1" style="width:100%; accent-color:var(--neon-cyan); height:4px; cursor:pointer;">
+                </div>
+                <div class="form-group">
+                  <label for="sliderOverlap" class="form-label" style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                    <span>Overlap:</span>
+                    <span id="labelOverlap" style="color:var(--neon-cyan);">1 sentence</span>
+                  </label>
+                  <input type="range" id="sliderOverlap" min="0" max="3" value="1" step="1" style="width:100%; accent-color:var(--neon-cyan); height:4px; cursor:pointer;">
+                </div>
+              </div>
+            </article>
+
+            <!-- Step 1: Pre-processing -->
+            <article class="pipeline-step">
+              <div class="step-header">
+                <span class="step-num">Step 1</span>
+                <h3 class="step-title">Query Processing</h3>
+              </div>
+              <div class="step-body">
+                <p>Clean terms (lowercasing, stop word filtering, and symbols stripping):</p>
+                <div class="token-list" id="pipelineTokens">
+                  <span class="token-badge" style="opacity: 0.5;">No active search</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Step 2: Retrieval Scoreboard -->
+            <article class="pipeline-step active-retrieval">
+              <div class="step-header">
+                <span class="step-num">Step 2</span>
+                <h3 class="step-title">Vector Search (Cosine Similarity)</h3>
+              </div>
+              <div class="step-body">
+                <p>Visualizing term proximity in semantic vector space (colored dots represent database document chunks, white star is your query):</p>
+                <div class="vector-canvas-container" style="position: relative; width: 100%; height: 180px; background: #070a14; border: 1px solid var(--border-cyan); border-radius: 6px; overflow: hidden; margin: 10px 0; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);">
+                  <canvas id="vectorCanvas" width="400" height="180" style="display:block; width:100%; height:100%;"></canvas>
+                </div>
+                <p>Calculating term overlap weights with database chunks using the TF-IDF representation model:</p>
+                <table class="rank-table" id="pipelineRankTable">
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Score</th>
+                      <th>Category</th>
+                      <th>Source Document Chunk Preview</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pipelineRankTableBody">
+                    <tr>
+                      <td colspan="4" style="text-align: center; color: var(--text-muted);">No query processed yet. Submit a chat question.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <!-- Step 3: Prompt Construction -->
+            <article class="pipeline-step">
+              <div class="step-header">
+                <span class="step-num">Step 3</span>
+                <h3 class="step-title">Prompt Injection Context</h3>
+              </div>
+              <div class="step-body">
+                <p>The context chunks are structured and injected into the LLM system prompt below:</p>
+                <label for="pipelinePromptBox" class="visual-hidden"></label>
+                <textarea id="pipelinePromptBox" class="prompt-textarea" readonly placeholder="Prompt text will generate here..."></textarea>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+        <!-- Pane 3: Document Archives Library -->
+        <div class="tab-pane" id="paneDocs">
+          <div class="doc-library" id="docLibrary" role="list">
+            <!-- Loaded dynamically from js/app.js -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Modal API Key Configuration overlay -->
+  <div class="modal-overlay" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="settingsModalTitle">Mission Control API Configuration</h2>
+        <button class="modal-close" id="closeSettingsBtn" aria-label="Close Settings Modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Gemini API Setup -->
+        <div class="form-group">
+          <label for="geminiApiKeyInput" class="form-label">Gemini API Key</label>
+          <input type="password" id="geminiApiKeyInput" class="form-input" placeholder="AIzaSy...">
+          <div class="form-help">
+            Enter a Google Gemini API key to enable <strong>real-time LLM reasoning</strong>. 
+            If empty, the AGMC falls back to the **Local Simulation Co-Pilot**, which utilizes local heuristics based directly on the retrieved document chunks.
+            Your key is saved locally in your browser cache (localStorage) and never transmitted to external servers except the official Google API.
+          </div>
+        </div>
+
+        <!-- System Model Info -->
+        <div class="form-group">
+          <label class="form-label">Active Model Instance</label>
+          <input type="text" class="form-input" readonly value="Gemini 1.5 Flash (Client-Side RAG)" disabled style="opacity: 0.5;">
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="clearApiBtn">CLEAR KEY</button>
+        <button class="btn-primary" id="saveApiBtn">SAVE CONFIG</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts loaded in dependency sequence (non-module to allow local file:// execution without CORS blocks) -->
+  <script src="data/documents.js"></script>
+  <script src="js/rag.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
