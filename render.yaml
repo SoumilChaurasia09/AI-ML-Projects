@@ -31,7 +31,6 @@ services:
   - type: web
     name: vit-bhopal-chatbox
     env: static
-    plan: free
     rootDir: university-rag-chatbot
     staticPublishPath: .
 
