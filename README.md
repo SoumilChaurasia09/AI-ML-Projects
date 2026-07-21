@@ -1,6 +1,6 @@
-# Vision AI Projects Portfolio
+# AI & Machine Learning Projects Portfolio
 
-This repository contains a collection of computer vision, deep learning, and medical image classification projects built using PyTorch, OpenCV, and FastAPI.
+This repository contains a diverse collection of computer vision, deep learning, reinforcement learning, tabular classification, and retrieval-augmented generation (RAG) projects.
 
 ## Projects Included
 
@@ -16,6 +16,18 @@ This repository contains a collection of computer vision, deep learning, and med
 4. **[Adult Census Income Classifier](./adult-census-income-classification)**
    - A machine learning pipeline and interactive FastAPI web dashboard utilizing a hyperparameter-tuned XGBoost model to predict individual income levels (above/below $50K/year) from demographic census profiles.
 
+5. **[Cart-Pole DQN Reinforcement Learning](./cartpole-rl-training)**
+   - An interactive DQN agent training dashboard visualizing the classic Cart-Pole control problem at 60 FPS in Farama Gymnasium with PyTorch.
+
+6. **[CineMinds AI Movie Recommendation Platform](./cine-match)**
+   - A Netflix-style movie recommendation engine combining content filtering, interactive cosine similarity vector space visualizers, and a conversational RAG co-pilot.
+
+7. **[Apollo L.E.M. Planetary Flight & RAG Guidance](./lunar-landing-rag)**
+   - An Apollo lunar module planetary flight simulator (Moon, Mars, Earth, Asteroid Bennu) coupled side-by-side with a vector-space visualizer and RAG-based flight guide.
+
+8. **[University Admissions RAG Chatbot Sandbox](./university-rag-chatbot)**
+   - An interactive single-page app displaying a client-side RAG Admissions chatbot for VIT Bhopal University with voice synthesis and speech-to-text dictation.
+
 ---
 
 ## Getting Started
@@ -29,6 +41,10 @@ Vision-AI-Portfolio/
 ├── README.md
 ├── adult-census-income-classification/
 ├── cancer_detection/
+├── cartpole-rl-training/
 ├── cifar10_cnn_classifier/
-└── face_recognition/
+├── cine-match/
+├── face_recognition/
+├── lunar-landing-rag/
+└── university-rag-chatbot/
 ```
