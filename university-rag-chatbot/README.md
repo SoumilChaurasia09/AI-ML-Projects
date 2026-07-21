@@ -6,6 +6,13 @@ It contains a raw knowledge document, a visual dataset explorer, and an interact
 
 ---
 
+## 🌐 Live Demo on Render
+
+You can access the live hosted application here:
+👉 **[VIT Bhopal Admissions ChatBox on Render](https://college-chatbox-h9jl.onrender.com/)**
+
+---
+
 ## 🚀 Running Locally
 
 To run the RAG application:
