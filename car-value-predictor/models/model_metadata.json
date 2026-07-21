@@ -1,0 +1,41 @@
+{
+    "features": [
+        "km_driven",
+        "fuel",
+        "seller_type",
+        "transmission",
+        "owner",
+        "mileage",
+        "engine",
+        "max_power",
+        "seats",
+        "Age"
+    ],
+    "fuel_mapping": {
+        "Petrol": 0,
+        "Diesel": 1,
+        "CNG": 2,
+        "LPG": 3
+    },
+    "seller_mapping": {
+        "Dealer": 0,
+        "Individual": 1,
+        "Trustmark Dealer": 2
+    },
+    "transmission_mapping": {
+        "Manual": 0,
+        "Automatic": 1
+    },
+    "owner_mapping": {
+        "Test Drive Car": 0,
+        "First Owner": 1,
+        "Second Owner": 2,
+        "Third Owner": 3,
+        "Fourth & Above Owner": 4
+    },
+    "evaluation": {
+        "r2": 0.9836590813196014,
+        "mae": 0.6108801375259959,
+        "rmse": 1.065906357304413
+    }
+}

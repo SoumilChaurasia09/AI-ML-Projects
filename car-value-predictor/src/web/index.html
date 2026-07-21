@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoValuate AI | Premium Car Resale Value Predictor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+                    <circle cx="7" cy="17" r="2" />
+                    <path d="M9 17h6" />
+                    <circle cx="17" cy="17" r="2" />
+                </svg>
+                <div class="brand">
+                    <h1>AutoValuate <span class="accent-text">AI</span></h1>
+                    <p class="tagline">Used Car Resale Predictor powered by Random Forest (V2)</p>
+                </div>
+            </div>
+            <div class="controls-area">
+                <div class="currency-selector">
+                    <span class="currency-label">Currency:</span>
+                    <button class="btn-toggle active" id="currency-inr" data-currency="INR">INR (Lakhs)</button>
+                    <button class="btn-toggle" id="currency-usd" data-currency="USD">USD ($)</button>
+                </div>
+                <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">
+                    <!-- Sun Icon -->
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Left Panel: Input Form -->
+            <section class="panel form-panel">
+                <div class="panel-header">
+                    <span class="badge">1</span>
+                    <h2>Vehicle Specifications</h2>
+                </div>
+                <form id="predictor-form">
+                    <div class="form-grid">
+                        <!-- Year of Manufacture Slider -->
+                        <div class="form-group">
+                            <label for="year">
+                                <span>Year of Manufacture</span>
+                                <span class="value-display" id="year_val">2020</span>
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" id="year" name="year" min="2003" max="2026" step="1" value="2020">
+                                <div class="slider-labels">
+                                    <span>2003</span>
+                                    <span>2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kilometers Driven Slider -->
+                        <div class="form-group">
+                            <label for="kms_driven">
+                                <span>Distance Driven</span>
+                                <span class="value-display" id="kms_driven_val">45,000 km</span>
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" id="kms_driven" name="kms_driven" min="1000" max="250000" step="500" value="45000">
+                                <div class="slider-labels">
+                                    <span>1,000 km</span>
+                                    <span>250,000+ km</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Engine CC Slider -->
+                        <div class="form-group">
+                            <label for="engine">
+                                <span>Engine Capacity</span>
+                                <span class="value-display" id="engine_val">1200 cc</span>
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" id="engine" name="engine" min="600" max="5000" step="50" value="1200">
+                                <div class="slider-labels">
+                                    <span>600 cc</span>
+                                    <span>5000 cc</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Max Power BHP Slider -->
+                        <div class="form-group">
+                            <label for="max_power">
+                                <span>Engine Power</span>
+                                <span class="value-display" id="max_power_val">85 bhp</span>
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" id="max_power" name="max_power" min="30" max="500" step="5" value="85">
+                                <div class="slider-labels">
+                                    <span>30 bhp</span>
+                                    <span>500 bhp</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mileage KMPL Slider -->
+                        <div class="form-group">
+                            <label for="mileage">
+                                <span>Fuel Economy (Mileage)</span>
+                                <span class="value-display" id="mileage_val">18.0 kmpl</span>
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" id="mileage" name="mileage" min="5" max="45" step="0.5" value="18.0">
+                                <div class="slider-labels">
+                                    <span>5.0 kmpl</span>
+                                    <span>45.0 kmpl</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seating Capacity -->
+                        <div class="form-group">
+                            <label>Seating Capacity</label>
+                            <div class="radio-group" id="seats-group">
+                                <input type="radio" id="seats-2" name="seats" value="2">
+                                <label for="seats-2" class="radio-card"><span>2</span></label>
+                                
+                                <input type="radio" id="seats-4" name="seats" value="4">
+                                <label for="seats-4" class="radio-card"><span>4</span></label>
+                                
+                                <input type="radio" id="seats-5" name="seats" value="5" checked>
+                                <label for="seats-5" class="radio-card"><span>5</span></label>
+                                
+                                <input type="radio" id="seats-7" name="seats" value="7">
+                                <label for="seats-7" class="radio-card"><span>7</span></label>
+                                
+                                <input type="radio" id="seats-8" name="seats" value="8">
+                                <label for="seats-8" class="radio-card"><span>8+</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Fuel Type Selection -->
+                        <div class="form-group full-width">
+                            <label>Fuel Type</label>
+                            <div class="radio-group">
+                                <input type="radio" id="fuel-petrol" name="fuel_type" value="Petrol" checked>
+                                <label for="fuel-petrol" class="radio-card"><span>Petrol</span></label>
+                                
+                                <input type="radio" id="fuel-diesel" name="fuel_type" value="Diesel">
+                                <label for="fuel-diesel" class="radio-card"><span>Diesel</span></label>
+                                
+                                <input type="radio" id="fuel-cng" name="fuel_type" value="CNG">
+                                <label for="fuel-cng" class="radio-card"><span>CNG</span></label>
+                                
+                                <input type="radio" id="fuel-lpg" name="fuel_type" value="LPG">
+                                <label for="fuel-lpg" class="radio-card"><span>LPG</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Transmission Selection -->
+                        <div class="form-group">
+                            <label>Transmission</label>
+                            <div class="radio-group">
+                                <input type="radio" id="trans-manual" name="transmission" value="Manual" checked>
+                                <label for="trans-manual" class="radio-card"><span>Manual</span></label>
+                                
+                                <input type="radio" id="trans-auto" name="transmission" value="Automatic">
+                                <label for="trans-auto" class="radio-card"><span>Automatic</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Seller Type Selection -->
+                        <div class="form-group">
+                            <label>Seller Type</label>
+                            <div class="radio-group">
+                                <input type="radio" id="seller-dealer" name="seller_type" value="Dealer">
+                                <label for="seller-dealer" class="radio-card"><span>Dealer</span></label>
+                                
+                                <input type="radio" id="seller-indiv" name="seller_type" value="Individual" checked>
+                                <label for="seller-indiv" class="radio-card"><span>Individual</span></label>
+
+                                <input type="radio" id="seller-trustmark" name="seller_type" value="Trustmark Dealer">
+                                <label for="seller-trustmark" class="radio-card"><span>Certified</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Previous Owners Selection -->
+                        <div class="form-group full-width">
+                            <label>Previous Owners</label>
+                            <div class="radio-group">
+                                <input type="radio" id="owner-0" name="owner" value="First Owner" checked>
+                                <label for="owner-0" class="radio-card"><span>1st Owner</span></label>
+                                
+                                <input type="radio" id="owner-1" name="owner" value="Second Owner">
+                                <label for="owner-1" class="radio-card"><span>2nd Owner</span></label>
+                                
+                                <input type="radio" id="owner-2" name="owner" value="Third Owner">
+                                <label for="owner-2" class="radio-card"><span>3rd Owner</span></label>
+                                
+                                <input type="radio" id="owner-3" name="owner" value="Fourth & Above Owner">
+                                <label for="owner-3" class="radio-card"><span>4th+ Owner</span></label>
+
+                                <input type="radio" id="owner-td" name="owner" value="Test Drive Car">
+                                <label for="owner-td" class="radio-card"><span>Demo Car</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="btn-predict">
+                        <span class="btn-text">Estimate Resale Value</span>
+                        <div class="btn-loader">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Right Panel: Results & Analytics -->
+            <section class="panel results-panel" id="results-panel">
+                <!-- Placeholder when no result is loaded -->
+                <div class="results-placeholder" id="results-placeholder">
+                    <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <h3>Valuation Report Pending</h3>
+                    <p>Enter the vehicle configurations on the left and click "Estimate Resale Value" to run the ML model analysis.</p>
+                </div>
+
+                <!-- Actual Results Section (Hidden initially) -->
+                <div class="results-content hide" id="results-content">
+                    <div class="panel-header">
+                        <span class="badge">2</span>
+                        <h2>Valuation Summary</h2>
+                    </div>
+
+                    <div class="valuation-main-card">
+                        <div class="valuation-price-area">
+                            <p class="valuation-title">Estimated Market Value</p>
+                            <h3 class="valuation-price" id="predicted-price-text">--</h3>
+                            <p class="valuation-subtext">Estimated age: <span id="car-age-text">0</span> years</p>
+                        </div>
+                        
+                        <!-- Value Retention Circular Progress -->
+                        <div class="retention-score-area">
+                            <div class="circular-progress-container">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring-bg" stroke="rgba(255,255,255,0.04)" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+                                    <circle class="progress-ring-bar" id="progress-ring-bar" stroke="url(#emerald-gold-grad)" stroke-width="8" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round" fill="transparent" r="50" cx="60" cy="60"/>
+                                    <defs>
+                                        <linearGradient id="emerald-gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#10b981" />
+                                            <stop offset="100%" stop-color="#fbbf24" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="progress-ring-text">
+                                    <span class="percent-val" id="retention-percent-text">0%</span>
+                                    <span class="percent-lbl">Retained</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breakdowns -->
+                    <div class="financial-breakdown">
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">
+                                <div class="dot dot-showroom"></div>
+                                <span>Est. Original Price</span>
+                            </div>
+                            <span class="breakdown-value" id="breakdown-original">--</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">
+                                <div class="dot dot-resale"></div>
+                                <span>Resale Prediction</span>
+                            </div>
+                            <span class="breakdown-value text-accent" id="breakdown-predicted">--</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">
+                                <div class="dot dot-depreciation"></div>
+                                <span>Est. Total Depreciation</span>
+                            </div>
+                            <span class="breakdown-value text-danger" id="breakdown-depreciation">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Valuation Insights -->
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <svg class="insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 14h.01M12 8v4" />
+                            </svg>
+                            <h4>Valuation Insight</h4>
+                        </div>
+                        <p class="insight-desc" id="insight-description-text">--</p>
+                    </div>
+
+                    <!-- R2 & ML Model Badge -->
+                    <div class="ml-badge-area">
+                        <div class="model-badge">
+                            <span class="pulse-dot"></span>
+                            <span>Model: Random Forest V2 (R² = 98.4%)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

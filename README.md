@@ -28,6 +28,9 @@ This repository contains a diverse collection of computer vision, deep learning,
 8. **[University Admissions RAG Chatbot Sandbox](./university-rag-chatbot)**
    - An interactive single-page app displaying a client-side RAG Admissions chatbot for VIT Bhopal University with voice synthesis and speech-to-text dictation.
 
+9. **[Used Car Value Predictor](./car-value-predictor)**
+   - An interactive web dashboard utilizing a Random Forest Regressor trained on the CarDekho V3 dataset to estimate used car market resale values directly from 10 technical specifications (mileage, engine cc, power, seats, age, fuel, transmission).
+
 ---
 
 ## Getting Started
@@ -43,6 +46,7 @@ Vision-AI-Portfolio/
 ├── cancer_detection/
 ├── cartpole-rl-training/
 ├── cifar10_cnn_classifier/
+├── car-value-predictor/
 ├── cine-match/
 ├── face_recognition/
 ├── lunar-landing-rag/
