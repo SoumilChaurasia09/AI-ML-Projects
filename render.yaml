@@ -34,3 +34,14 @@ services:
     plan: free
     rootDir: university-rag-chatbot
     publishDir: .
+
+  - type: web
+    name: car-value-predictor
+    env: python
+    plan: free
+    rootDir: car-value-predictor
+    buildCommand: pip install -r requirements.txt && python src/train.py
+    startCommand: gunicorn src.server:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0

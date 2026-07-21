@@ -20,8 +20,9 @@ def download_dataset(url, dest_path):
         raise Exception(f"Failed to download dataset. Status code: {response.status_code}")
 
 def preprocess_and_train():
-    data_dir = os.path.join("C:\\Users\\soumi\\.gemini\\antigravity\\scratch\\car-value-predictor", "data")
-    models_dir = os.path.join("C:\\Users\\soumi\\.gemini\\antigravity\\scratch\\car-value-predictor", "models")
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = os.path.join(BASE_DIR, "data")
+    models_dir = os.path.join(BASE_DIR, "models")
     os.makedirs(data_dir, exist_ok=True)
     os.makedirs(models_dir, exist_ok=True)
 
