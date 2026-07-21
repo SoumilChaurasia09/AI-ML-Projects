@@ -13,6 +13,9 @@ This repository contains a collection of computer vision, deep learning, and med
 3. **[Face Recognition System](./face_recognition)**
    - A deep learning face detection and landmark-matching application leveraging facial feature representation.
 
+4. **[Adult Census Income Classifier](./adult-census-income-classification)**
+   - A machine learning pipeline and interactive FastAPI web dashboard utilizing a hyperparameter-tuned XGBoost model to predict individual income levels (above/below $50K/year) from demographic census profiles.
+
 ---
 
 ## Getting Started
@@ -24,6 +27,7 @@ To explore or run any of the individual projects, navigate into the project dire
 Vision-AI-Portfolio/
 ├── .gitignore
 ├── README.md
+├── adult-census-income-classification/
 ├── cancer_detection/
 ├── cifar10_cnn_classifier/
 └── face_recognition/
