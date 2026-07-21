@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive AI model dashboard predicting adult census income classification (above/below $50K per year) using XGBoost.">
+    <title>Adult Income Classifier - AI Census Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="background-decor blur-1"></div>
+    <div class="background-decor blur-2"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-container">
+                <span class="logo-icon">📊</span>
+                <h1 id="main-title">CensusPredict AI</h1>
+            </div>
+            <p class="subtitle">Demographic Machine Learning Model for Adult Census Income Classification</p>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="dashboard-grid">
+            
+            <!-- Left Panel: Input Demographics -->
+            <section class="card glass input-card">
+                <div class="card-header">
+                    <h2>1. Demographic Profile</h2>
+                    <p class="card-subtitle">Adjust parameters below or choose a preset to run live inference.</p>
+                </div>
+
+                <!-- NEW: Quick-Start Presets -->
+                <div class="presets-section">
+                    <span class="section-tag">Scenario Presets</span>
+                    <div class="presets-grid">
+                        <button type="button" class="preset-btn" onclick="loadPreset('student')" id="preset-student">
+                            <span class="icon">🎓</span> College Student
+                        </button>
+                        <button type="button" class="preset-btn active" onclick="loadPreset('developer')" id="preset-developer">
+                            <span class="icon">💻</span> Software Engineer
+                        </button>
+                        <button type="button" class="preset-btn" onclick="loadPreset('executive')" id="preset-executive">
+                            <span class="icon">💼</span> Senior Executive
+                        </button>
+                        <button type="button" class="preset-btn" onclick="loadPreset('services')" id="preset-services">
+                            <span class="icon">🛠️</span> Entry Services
+                        </button>
+                    </div>
+                </div>
+                
+                <form id="census-form" onsubmit="event.preventDefault(); submitPrediction();">
+                    
+                    <!-- Section: Personal -->
+                    <div class="form-section">
+                        <h3>Personal Demographics</h3>
+                        <div class="grid-2col">
+                            <!-- Age -->
+                            <div class="input-group">
+                                <label for="age">Age: <span id="age-val" class="badge">32</span></label>
+                                <input type="range" id="age" name="age" min="17" max="90" value="32" class="slider" oninput="document.getElementById('age-val').innerText = this.value">
+                            </div>
+                            
+                            <!-- Sex -->
+                            <div class="input-group">
+                                <label for="sex">Gender</label>
+                                <select id="sex" name="sex" required>
+                                    <option value="Male" selected>Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid-2col">
+                            <!-- Race -->
+                            <div class="input-group">
+                                <label for="race">Race</label>
+                                <select id="race" name="race" required>
+                                    <option value="White" selected>White</option>
+                                    <option value="Black">Black</option>
+                                    <option value="Asian-Pac-Islander">Asian-Pac Islander</option>
+                                    <option value="Amer-Indian-Eskimo">Amer-Indian-Eskimo</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Native Country -->
+                            <div class="input-group">
+                                <label for="native-country">Native Country</label>
+                                <select id="native-country" name="native-country" required>
+                                    <option value="United-States" selected>United States</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="India">India</option>
+                                    <option value="Mexico">Mexico</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="England">England</option>
+                                    <option value="Philippines">Philippines</option>
+                                    <option value="Cuba">Cuba</option>
+                                    <option value="Italy">Italy</option>
+                                    <option value="China">China</option>
+                                    <option value="Japan">Japan</option>
+                                    <option value="Vietnam">Vietnam</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Employment -->
+                    <div class="form-section">
+                        <h3>Employment & Education</h3>
+                        
+                        <div class="grid-2col">
+                            <!-- Workclass -->
+                            <div class="input-group">
+                                <label for="workclass">Workclass</label>
+                                <select id="workclass" name="workclass" required>
+                                    <option value="Private" selected>Private</option>
+                                    <option value="Self-emp-not-inc">Self-Employed (No Inc)</option>
+                                    <option value="Self-emp-inc">Self-Employed (Inc)</option>
+                                    <option value="Federal-gov">Federal Gov</option>
+                                    <option value="Local-gov">Local Gov</option>
+                                    <option value="State-gov">State Gov</option>
+                                    <option value="Without-pay">Without Pay</option>
+                                </select>
+                            </div>
+
+                            <!-- Occupation -->
+                            <div class="input-group">
+                                <label for="occupation">Occupation</label>
+                                <select id="occupation" name="occupation" required>
+                                    <option value="Prof-specialty" selected>Professional Specialty</option>
+                                    <option value="Exec-managerial">Executive / Managerial</option>
+                                    <option value="Tech-support">Tech Support</option>
+                                    <option value="Sales">Sales</option>
+                                    <option value="Craft-repair">Craft / Repair</option>
+                                    <option value="Adm-clerical">Admin / Clerical</option>
+                                    <option value="Other-service">Other Service</option>
+                                    <option value="Machine-op-inspct">Machine Operator</option>
+                                    <option value="Transport-moving">Transport / Moving</option>
+                                    <option value="Handlers-cleaners">Handlers / Cleaners</option>
+                                    <option value="Protective-serv">Protective Service</option>
+                                    <option value="Armed-Forces">Armed Forces</option>
+                                    <option value="Farming-fishing">Farming / Fishing</option>
+                                    <option value="Priv-house-serv">Private House Service</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid-2col">
+                            <!-- Education Num -->
+                            <div class="input-group">
+                                <label for="education-num">Education: <span id="edu-val" class="badge">13 years</span></label>
+                                <input type="range" id="education-num" name="education-num" min="1" max="16" value="13" class="slider" oninput="updateEduText(this.value)">
+                            </div>
+
+                            <!-- Hours per week -->
+                            <div class="input-group">
+                                <label for="hours-per-week">Hours/Week: <span id="hours-val" class="badge">45</span></label>
+                                <input type="range" id="hours-per-week" name="hours-per-week" min="1" max="99" value="45" class="slider" oninput="document.getElementById('hours-val').innerText = this.value">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Financial & Relationships -->
+                    <div class="form-section">
+                        <h3>Financial & Household</h3>
+                        
+                        <div class="grid-2col">
+                            <!-- Marital Status -->
+                            <div class="input-group">
+                                <label for="marital-status">Marital Status</label>
+                                <select id="marital-status" name="marital-status" required>
+                                    <option value="Married-civ-spouse" selected>Married (Civilian Spouse)</option>
+                                    <option value="Never-married">Never Married</option>
+                                    <option value="Divorced">Divorced</option>
+                                    <option value="Separated">Separated</option>
+                                    <option value="Widowed">Widowed</option>
+                                    <option value="Married-spouse-absent">Married (Spouse Absent)</option>
+                                    <option value="Married-AF-spouse">Married (Armed Forces Spouse)</option>
+                                </select>
+                            </div>
+
+                            <!-- Relationship -->
+                            <div class="input-group">
+                                <label for="relationship">Relationship Role</label>
+                                <select id="relationship" name="relationship" required>
+                                    <option value="Husband" selected>Husband</option>
+                                    <option value="Wife">Wife</option>
+                                    <option value="Not-in-family">Not in Family</option>
+                                    <option value="Own-child">Own Child</option>
+                                    <option value="Unmarried">Unmarried</option>
+                                    <option value="Other-relative">Other Relative</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid-2col">
+                            <!-- Capital Gain -->
+                            <div class="input-group">
+                                <label for="capital-gain">Capital Gain ($)</label>
+                                <input type="number" id="capital-gain" name="capital-gain" min="0" value="5000" placeholder="e.g. 0">
+                            </div>
+
+                            <!-- Capital Loss -->
+                            <div class="input-group">
+                                <label for="capital-loss">Capital Loss ($)</label>
+                                <input type="number" id="capital-loss" name="capital-loss" min="0" value="0" placeholder="e.g. 0">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            
+            <!-- Right Panel: Prediction Results & Insights -->
+            <div class="right-column">
+                
+                <!-- Card: Prediction Result -->
+                <section class="card glass result-card">
+                    <div class="card-header">
+                        <h2>2. Prediction Output</h2>
+                        <p class="card-subtitle">Live real-time output generated from Tuned XGBoost model.</p>
+                    </div>
+                    
+                    <div class="result-placeholder hidden" id="result-placeholder">
+                        <div class="pulse-icon">🧠</div>
+                        <p>Adjust the parameters to run live model inference.</p>
+                    </div>
+
+                    <div class="result-content" id="result-content">
+                        <!-- Upper Flex -->
+                        <div class="result-summary">
+                            <div class="gauge-container">
+                                <svg class="progress-ring" width="160" height="160">
+                                    <circle class="progress-ring__background" stroke="rgba(255,255,255,0.05)" stroke-width="12" fill="transparent" r="68" cx="80" cy="80" />
+                                    <circle id="progress-indicator" class="progress-ring__circle" stroke="var(--accent-purple)" stroke-width="12" fill="transparent" r="68" cx="80" cy="80" />
+                                </svg>
+                                <div class="gauge-text">
+                                    <span id="prob-percentage" class="percentage-val">0%</span>
+                                    <span class="percentage-lbl">Probability</span>
+                                </div>
+                            </div>
+                            
+                            <div class="outcome-box">
+                                <span class="label">CLASSIFICATION</span>
+                                <div id="predicted-class" class="class-badge class-negative">&le;$50K/yr</div>
+                                <p id="short-explanation">Confidence score is below the high-income threshold.</p>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Explanation Drivers -->
+                        <div class="insights-box">
+                            <h4>Key Probability Drivers</h4>
+                            <ul id="drivers-list">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+
+                        <!-- NEW: What-If Optimization Feedback -->
+                        <div class="insights-box what-if-box hidden" id="what-if-box">
+                            <h4>What-If Scenarios (Optimization Tips)</h4>
+                            <ul id="what-if-list" class="what-if-list">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Card: Tabbed Model Insights -->
+                <section class="card glass insights-card">
+                    <!-- Nav Tabs -->
+                    <nav class="tabs-nav" aria-label="Dashboard Tabs">
+                        <button class="tab-btn active" onclick="switchTab('tab-metrics')">Model Comparison</button>
+                        <button class="tab-btn" onclick="switchTab('tab-charts')">Performance Plots</button>
+                    </nav>
+                    
+                    <!-- Content: Metrics Table -->
+                    <div id="tab-metrics" class="tab-content active">
+                        <h3>Cross-Validation Model Metrics</h3>
+                        <p class="tab-description">Evaluating Logistic Regression, Random Forest, and XGBoost on test records. Tuned XGBoost uses class balancing to prioritize recall.</p>
+                        
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Model Algorithm</th>
+                                        <th>Accuracy</th>
+                                        <th>F1-Score</th>
+                                        <th>ROC-AUC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Logistic Regression (Linear)</td>
+                                        <td>80.37%</td>
+                                        <td>0.6696</td>
+                                        <td>0.9036</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Random Forest (Ensemble)</td>
+                                        <td>81.27%</td>
+                                        <td>0.6854</td>
+                                        <td>0.9144</td>
+                                    </tr>
+                                    <tr class="highlight-row">
+                                        <td>XGBoost (Baseline)</td>
+                                        <td>87.40%</td>
+                                        <td>0.7083</td>
+                                        <td>0.9285</td>
+                                    </tr>
+                                    <tr class="tuned-row">
+                                        <td><strong>Tuned XGBoost (Selected)</strong></td>
+                                        <td><strong>83.80%</strong></td>
+                                        <td><strong>0.7126</strong></td>
+                                        <td><strong>0.9281</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="note-box">
+                            <strong>Note on Imbalance Trade-off:</strong> The Tuned XGBoost model leverages `scale_pos_weight` to optimize minority-class recall. This increases the sensitivity to catch high-income individuals (**Recall increased from 65% to 85%**) while accepting minor accuracy decrease due to false positives.
+                        </div>
+                    </div>
+                    
+                    <!-- Content: Performance Charts -->
+                    <div id="tab-charts" class="tab-content">
+                        <h3>Model Performance Visualizations</h3>
+                        
+                        <div class="plots-carousel">
+                            <div class="plot-item">
+                                <h4>ROC-AUC Curves</h4>
+                                <img src="/static/roc_curves_comparison.png" alt="ROC Curves Comparison Chart" class="plot-img" onerror="this.src='https://placehold.co/600x400/161329/fff?text=Run+Model+Training+to+Generate+Plot'">
+                            </div>
+                            
+                            <div class="plot-item">
+                                <h4>Feature Importance (XGBoost)</h4>
+                                <img src="/static/feature_importance_xgboost.png" alt="XGBoost Feature Importances" class="plot-img" onerror="this.src='https://placehold.co/600x400/161329/fff?text=Run+Model+Training+to+Generate+Plot'">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Define education years mappings
+        const eduMap = {
+            1: "Preschool", 2: "1st-4th Grade", 3: "5th-6th Grade", 4: "7th-8th Grade",
+            5: "9th Grade", 6: "10th Grade", 7: "11th Grade", 8: "12th Grade",
+            9: "HS Grad (High School)", 10: "Some College", 11: "Assoc-voc (Vocational)",
+            12: "Assoc-acdm (Academic)", 13: "Bachelors Degree", 14: "Masters Degree",
+            15: "Prof-school", 16: "Doctorate (PhD)"
+        };
+
+        // Presets Configuration
+        const presets = {
+            student: {
+                age: 20,
+                sex: "Female",
+                race: "White",
+                "native-country": "United-States",
+                workclass: "Private",
+                occupation: "Adm-clerical",
+                "education-num": 10,
+                "hours-per-week": 15,
+                "marital-status": "Never-married",
+                relationship: "Own-child",
+                "capital-gain": 0,
+                "capital-loss": 0
+            },
+            developer: {
+                age: 32,
+                sex: "Male",
+                race: "White",
+                "native-country": "United-States",
+                workclass: "Private",
+                occupation: "Prof-specialty",
+                "education-num": 13,
+                "hours-per-week": 45,
+                "marital-status": "Married-civ-spouse",
+                relationship: "Husband",
+                "capital-gain": 5000,
+                "capital-loss": 0
+            },
+            executive: {
+                age: 52,
+                sex: "Male",
+                race: "White",
+                "native-country": "United-States",
+                workclass: "Private",
+                occupation: "Exec-managerial",
+                "education-num": 14,
+                "hours-per-week": 50,
+                "marital-status": "Married-civ-spouse",
+                relationship: "Husband",
+                "capital-gain": 15000,
+                "capital-loss": 0
+            },
+            services: {
+                age: 24,
+                sex: "Female",
+                race: "Black",
+                "native-country": "United-States",
+                workclass: "Private",
+                occupation: "Other-service",
+                "education-num": 9,
+                "hours-per-week": 35,
+                "marital-status": "Never-married",
+                relationship: "Not-in-family",
+                "capital-gain": 0,
+                "capital-loss": 0
+            }
+        };
+
+        function updateEduText(val) {
+            const eduText = eduMap[val] || `${val} years`;
+            document.getElementById('edu-val').innerText = `${val} yrs (${eduText})`;
+        }
+
+        // SVG Ring animation calculation
+        const ring = document.getElementById('progress-indicator');
+        const radius = ring.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        ring.style.strokeDasharray = `${circumference} ${circumference}`;
+        ring.style.strokeDashoffset = circumference;
+
+        function setProgress(percent) {
+            const offset = circumference - (percent / 100) * circumference;
+            ring.style.strokeDashoffset = offset;
+        }
+
+        // Tabs navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Load Preset Values
+        function loadPreset(type) {
+            const data = presets[type];
+            if (!data) return;
+            
+            // Set form values
+            document.getElementById('age').value = data.age;
+            document.getElementById('age-val').innerText = data.age;
+            
+            document.getElementById('sex').value = data.sex;
+            document.getElementById('race').value = data.race;
+            document.getElementById('native-country').value = data["native-country"];
+            document.getElementById('workclass').value = data.workclass;
+            document.getElementById('occupation').value = data.occupation;
+            
+            document.getElementById('education-num').value = data["education-num"];
+            updateEduText(data["education-num"]);
+            
+            document.getElementById('hours-per-week').value = data["hours-per-week"];
+            document.getElementById('hours-val').innerText = data["hours-per-week"];
+            
+            document.getElementById('marital-status').value = data["marital-status"];
+            document.getElementById('relationship').value = data.relationship;
+            
+            document.getElementById('capital-gain').value = data["capital-gain"];
+            document.getElementById('capital-loss').value = data["capital-loss"];
+            
+            // Highlight selected preset button
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`preset-${type}`).classList.add('active');
+
+            // Trigger prediction immediately
+            submitPrediction();
+        }
+
+        // Setup live auto-predictions on all form inputs
+        window.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('census-form');
+            const inputs = form.querySelectorAll('input, select');
+            
+            inputs.forEach(input => {
+                const eventName = input.type === 'range' ? 'input' : 'change';
+                input.addEventListener(eventName, debounce(submitPrediction, 250));
+            });
+            
+            // Trigger initial state
+            submitPrediction();
+        });
+
+        // Simple debounce to prevent flooding the server when dragging range sliders
+        let debounceTimer;
+        function debounce(func, delay) {
+            return function(...args) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // Submit to API
+        async function submitPrediction() {
+            // Build request object
+            const payload = {
+                "age": parseInt(document.getElementById('age').value),
+                "workclass": document.getElementById('workclass').value,
+                "fnlwgt": 200000, // standard median weight
+                "education-num": parseInt(document.getElementById('education-num').value),
+                "marital-status": document.getElementById('marital-status').value,
+                "occupation": document.getElementById('occupation').value,
+                "relationship": document.getElementById('relationship').value,
+                "race": document.getElementById('race').value,
+                "sex": document.getElementById('sex').value,
+                "capital-gain": parseInt(document.getElementById('capital-gain').value || 0),
+                "capital-loss": parseInt(document.getElementById('capital-loss').value || 0),
+                "hours-per-week": parseInt(document.getElementById('hours-per-week').value),
+                "native-country": document.getElementById('native-country').value
+            };
+
+            try {
+                // Add soft-loading indicator pulse to probability text
+                document.getElementById('prob-percentage').style.opacity = '0.5';
+
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error('API server returned an error.');
+                }
+
+                const result = await response.json();
+                displayResult(result);
+
+            } catch (err) {
+                console.error(err);
+                // Fail silently or print in console to avoid disruptive popups during drag
+            } finally {
+                document.getElementById('prob-percentage').style.opacity = '1';
+            }
+        }
+
+        function displayResult(res) {
+            // Hide placeholder, show content
+            document.getElementById('result-placeholder').classList.add('hidden');
+            const content = document.getElementById('result-content');
+            content.classList.remove('hidden');
+
+            // Set probabilities
+            const probPercent = Math.round(res.probability * 100);
+            document.getElementById('prob-percentage').innerText = `${probPercent}%`;
+            setProgress(probPercent);
+
+            // Set outcome badge
+            const badge = document.getElementById('predicted-class');
+            if (res.prediction === 1) {
+                badge.innerText = '>$50K/year';
+                badge.className = 'class-badge class-positive';
+                document.getElementById('short-explanation').innerText = 'Confidence matches high-income demographics.';
+            } else {
+                badge.innerText = '≤$50K/year';
+                badge.className = 'class-badge class-negative';
+                document.getElementById('short-explanation').innerText = 'Confidence resides below the high-income threshold.';
+            }
+
+            // Fill reason drivers
+            const list = document.getElementById('drivers-list');
+            list.innerHTML = '';
+            res.reasons.forEach(reason => {
+                const li = document.createElement('li');
+                li.innerText = reason;
+                list.appendChild(li);
+            });
+
+            // What-If Optimization Suggestion Hints
+            const whatIfBox = document.getElementById('what-if-box');
+            if (res.prediction === 0) {
+                let suggestions = [];
+                const currentEdu = parseInt(document.getElementById('education-num').value);
+                const currentHours = parseInt(document.getElementById('hours-per-week').value);
+                
+                if (currentEdu < 13) {
+                    suggestions.push(`💡 <strong>Education:</strong> Increasing your education to a Bachelor's Degree (${eduMap[13]}) or higher could lift classification probability substantially.`);
+                }
+                if (currentHours < 40) {
+                    suggestions.push(`💡 <strong>Work Hours:</strong> Working full-time (40+ hours/week) is statistically key to high income classification.`);
+                }
+                const currentOccupation = document.getElementById('occupation').value;
+                if (!['Exec-managerial', 'Prof-specialty', 'Tech-support'].includes(currentOccupation)) {
+                    suggestions.push(`💡 <strong>Occupation:</strong> Transitioning to a high-weight specialty like <em>Executive/Managerial</em> or <em>Professional Specialty</em> shifts model weights heavily.`);
+                }
+                const currentMarital = document.getElementById('marital-status').value;
+                if (currentMarital === "Never-married") {
+                    suggestions.push(`💡 <strong>Demographic Note:</strong> In the census dataset, married couples ('Married-civ-spouse') have the single strongest statistical correlation with high income classification.`);
+                }
+
+                if (suggestions.length > 0) {
+                    document.getElementById('what-if-list').innerHTML = suggestions.map(s => `<li>${s}</li>`).join('');
+                    whatIfBox.classList.remove('hidden');
+                } else {
+                    whatIfBox.classList.add('hidden');
+                }
+            } else {
+                whatIfBox.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
