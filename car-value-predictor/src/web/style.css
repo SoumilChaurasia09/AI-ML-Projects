@@ -7,17 +7,17 @@
 }
 
 :root {
-    /* Color Tokens (Emerald and Gold Dark Theme Default) */
-    --bg-color: #050c09;
-    --panel-bg: rgba(13, 27, 22, 0.65);
-    --border-color: rgba(255, 255, 255, 0.06);
-    --text-primary: #e6f0eb;
-    --text-secondary: #8ea89d;
-    --accent: #10b981;
-    --accent-light: #34d399;
-    --accent-cyan: #fbbf24; /* Used for highlight gold */
-    --success: #059669;
-    --danger: #f43f5e;
+    /* Color Tokens (Classy Navy & Champagne Gold Dark Theme) */
+    --bg-color: #0b0f19;
+    --panel-bg: rgba(18, 25, 41, 0.65);
+    --border-color: rgba(255, 255, 255, 0.05);
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent: #3b82f6; /* Steel Blue */
+    --accent-light: #60a5fa;
+    --accent-cyan: #e2b765; /* Muted Gold / Champagne */
+    --success: #10b981;
+    --danger: #ef4444;
     --shadow: rgba(0, 0, 0, 0.4);
     
     /* Layout Tokens */
@@ -26,18 +26,18 @@
 }
 
 [data-theme="light"] {
-    /* Color Tokens (Light Sage and Mint Theme) */
-    --bg-color: #f1f7f5;
+    /* Color Tokens (Light Ice and Gold Theme) */
+    --bg-color: #f4f6fa;
     --panel-bg: rgba(255, 255, 255, 0.8);
-    --border-color: rgba(13, 27, 22, 0.07);
-    --text-primary: #0d2218;
-    --text-secondary: #4b6b5d;
-    --accent: #059669;
-    --accent-light: #10b981;
-    --accent-cyan: #d97706; /* Gold/Darker Amber */
-    --success: #047857;
-    --danger: #e11d48;
-    --shadow: rgba(13, 27, 22, 0.05);
+    --border-color: rgba(15, 23, 42, 0.06);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --accent: #2563eb;
+    --accent-light: #3b82f6;
+    --accent-cyan: #b45309; /* Dark Amber / Gold */
+    --success: #059669;
+    --danger: #dc2626;
+    --shadow: rgba(15, 23, 42, 0.04);
 }
 
 body {
@@ -58,7 +58,7 @@ body {
     position: absolute;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(251, 191, 36, 0.06) 50%, rgba(0,0,0,0) 100%);
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(226, 183, 101, 0.05) 50%, rgba(0,0,0,0) 100%);
     top: -10%;
     right: -10%;
     z-index: 0;
@@ -72,7 +72,7 @@ body::after {
     position: absolute;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, rgba(16, 185, 129, 0.04) 50%, rgba(0,0,0,0) 100%);
+    background: radial-gradient(circle, rgba(226, 183, 101, 0.06) 0%, rgba(59, 130, 246, 0.03) 50%, rgba(0,0,0,0) 100%);
     bottom: -10%;
     left: -10%;
     z-index: 0;
