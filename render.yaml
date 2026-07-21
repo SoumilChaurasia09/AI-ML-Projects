@@ -28,12 +28,12 @@ services:
     rootDir: cifar10_cnn_classifier
     dockerfilePath: Dockerfile
 
-  - type: static
+  - type: web
     name: vit-bhopal-chatbox
     env: static
     plan: free
     rootDir: university-rag-chatbot
-    publishDir: .
+    staticPublishPath: .
 
   - type: web
     name: car-value-predictor
