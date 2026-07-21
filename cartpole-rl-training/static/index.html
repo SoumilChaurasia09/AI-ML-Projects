@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart-Pole Reinforcement Learning Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="pulse-icon"></span>
+                <h1>Cart-Pole RL Agent Dashboard</h1>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <nav class="nav-tabs">
+                <button class="tab-link active" data-tab="tab-training">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    <span>Agent Training</span>
+                </button>
+                <button class="tab-link" data-tab="tab-manual">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M12 12h.01"></path><path d="M17 10h2v4h-2z"></path><path d="M5 10h2v4H5z"></path></svg>
+                    <span>Manual Play</span>
+                </button>
+                <button class="tab-link" data-tab="tab-theory">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    <span>How it Works</span>
+                </button>
+            </nav>
+
+            <div class="right-header-actions">
+                <!-- Sound Toggle -->
+                <button id="btn-sound" class="btn-icon" title="Toggle Sound Effects">
+                    <svg id="icon-sound-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                    <svg id="icon-sound-off" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                </button>
+
+                <div class="status-panel">
+                    <span class="status-label">Status:</span>
+                    <span id="status-badge" class="badge badge-idle">Idle</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="app-content">
+            
+            <!-- LEFT PANEL (Varies based on selected Tab) -->
+            <section class="control-panel">
+                
+                <!-- TAB 1: Training Controls -->
+                <div id="tab-training" class="tab-content active">
+                    <div class="card panel-card">
+                        <h2>Quick Presets</h2>
+                        <div class="presets-grid">
+                            <button class="preset-btn active" id="preset-balanced">
+                                <span class="preset-title">Balanced</span>
+                                <span class="preset-desc">Standard parameters</span>
+                            </button>
+                            <button class="preset-btn" id="preset-fast">
+                                <span class="preset-title">Fast Solver</span>
+                                <span class="preset-desc">Explosive learning</span>
+                            </button>
+                            <button class="preset-btn" id="preset-stable">
+                                <span class="preset-title">Conservative</span>
+                                <span class="preset-desc">Stable convergence</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card panel-card margin-top">
+                        <h2>Hyperparameters</h2>
+                        <div class="param-list">
+                            <div class="form-group">
+                                <label for="param-episodes">
+                                    <span>Max Episodes</span>
+                                    <span id="val-episodes" class="val-bubble">300</span>
+                                </label>
+                                <input type="range" id="param-episodes" min="100" max="1000" step="50" value="300">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="param-max-steps">
+                                    <span>Max Steps per Episode</span>
+                                    <span id="val-max-steps" class="val-bubble">500</span>
+                                </label>
+                                <input type="range" id="param-max-steps" min="100" max="500" step="50" value="500">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="param-lr">
+                                    <span>Learning Rate</span>
+                                    <span id="val-lr" class="val-bubble">0.001</span>
+                                </label>
+                                <input type="range" id="param-lr" min="-4" max="-2" step="0.5" value="-3">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="param-gamma">
+                                    <span>Discount Factor (Gamma)</span>
+                                    <span id="val-gamma" class="val-bubble">0.99</span>
+                                </label>
+                                <input type="range" id="param-gamma" min="0.90" max="0.999" step="0.01" value="0.99">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="param-epsilon-decay">
+                                    <span>Epsilon Decay Rate</span>
+                                    <span id="val-epsilon-decay" class="val-bubble">0.995</span>
+                                </label>
+                                <input type="range" id="param-epsilon-decay" min="0.980" max="0.999" step="0.005" value="0.995">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="param-batch-size">
+                                    <span>Batch Size</span>
+                                    <span id="val-batch-size" class="val-bubble">128</span>
+                                </label>
+                                <select id="param-batch-size">
+                                    <option value="32">32</option>
+                                    <option value="64">64</option>
+                                    <option value="128" selected>128</option>
+                                    <option value="256">256</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group row-group">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="param-visual-mode" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                                <span class="toggle-label">
+                                    <strong>Visual Animation Mode</strong>
+                                    <small>Live physics rendering (slower training)</small>
+                                </span>
+                            </div>
+                        </div>
+
+                        <hr class="divider margin-y">
+
+                        <h2>Physics Sandbox</h2>
+                        <div class="param-list">
+                            <div class="form-group">
+                                <label for="param-gravity">
+                                    <span>Gravity (m/s²)</span>
+                                    <span id="val-gravity" class="val-bubble">9.8</span>
+                                </label>
+                                <input type="range" id="param-gravity" min="1.0" max="30.0" step="0.5" value="9.8">
+                            </div>
+                            <div class="form-group">
+                                <label for="param-length">
+                                    <span>Pole Length (m)</span>
+                                    <span id="val-length" class="val-bubble">1.0</span>
+                                </label>
+                                <input type="range" id="param-length" min="0.4" max="4.0" step="0.2" value="1.0">
+                            </div>
+                        </div>
+
+                        <div class="actions-group margin-top">
+                            <button id="btn-start" class="btn btn-primary">Start Training</button>
+                            <button id="btn-stop" class="btn btn-danger" disabled>Stop</button>
+                            <button id="btn-eval" class="btn btn-secondary">Test Saved Model</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: Manual Play Controls -->
+                <div id="tab-manual" class="tab-content">
+                    <div class="card panel-card">
+                        <h2>Manual Controls</h2>
+                        <p class="section-desc">Try to balance the pole yourself using your keyboard or the buttons below.</p>
+                        
+                        <div class="keyboard-instructions">
+                            <div class="key-indicator"><kbd>←</kbd> Move Left</div>
+                            <div class="key-indicator"><kbd>→</kbd> Move Right</div>
+                        </div>
+
+                        <div class="manual-buttons">
+                            <button id="btn-manual-left" class="btn btn-action">Push Left</button>
+                            <button id="btn-manual-right" class="btn btn-action">Push Right</button>
+                        </div>
+
+                        <div class="manual-actions">
+                            <button id="btn-manual-start" class="btn btn-primary">Play Game</button>
+                            <button id="btn-manual-reset" class="btn btn-secondary" disabled>Reset</button>
+                        </div>
+
+                        <hr class="divider">
+                        
+                        <div class="score-card">
+                            <div class="score-label">Your Current Score</div>
+                            <div id="manual-score" class="score-value">0</div>
+                            <div class="score-label">Your Best Score</div>
+                            <div id="manual-high-score" class="score-value-high">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: Theoretical Content -->
+                <div id="tab-theory" class="tab-content">
+                    <div class="card panel-card theory-card">
+                        <h2>Deep Q-Network</h2>
+                        <p><strong>DQN</strong> combines Q-Learning, a classic Reinforcement Learning algorithm, with Deep Neural Networks.</p>
+                        
+                        <h3>Key Innovations:</h3>
+                        <ul>
+                            <li><strong>Experience Replay:</strong> Stores state transitions `(s, a, r, s')` in a buffer. Random sampling removes correlations in training data, stabilizing updates.</li>
+                            <li><strong>Target Network:</strong> Uses a separate network to estimate target Q-values. The target network parameters are updated slowly towards the policy network parameters, preventing divergence.</li>
+                            <li><strong>Huber Loss:</strong> A loss function that is quadratic for small errors and linear for large errors, preventing gradients from exploding.</li>
+                        </ul>
+                        
+                        <h3>Bellman Equation:</h3>
+                        <div class="math-block">
+                            \[Q(s, a) = r + \gamma \max_{a'} Q(s', a')\]
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- RIGHT PANEL: Visualizer & Charts -->
+            <section class="main-panel">
+                <!-- Visualizer & Console Row -->
+                <div class="visualizer-row">
+                    <div class="visualizer-container card">
+                        <div class="visualizer-header">
+                            <h3>Physical Cart-Pole Environment</h3>
+                            <div id="canvas-telemetry" class="canvas-telemetry">
+                                <span class="telemetry-badge">Position: <strong id="tel-pos">0.00</strong>m</span>
+                                <span class="telemetry-badge">Angle: <strong id="tel-angle">0.0</strong>°</span>
+                            </div>
+                        </div>
+                        <div class="canvas-wrapper">
+                            <canvas id="cartpole-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="console-container card">
+                        <h3>Event Console</h3>
+                        <div id="log-console" class="log-console">
+                            <div class="log-line system">[System] Ready. Customize parameters or click "Test Saved Model" to see the agent in action!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Summary Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card card">
+                        <div class="stat-title">Current Episode</div>
+                        <div id="stat-episode" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-title">Reward</div>
+                        <div id="stat-reward" class="stat-value">0.0</div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-title">Avg Reward (100 ep)</div>
+                        <div id="stat-avg-reward" class="stat-value">0.0</div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-title">Training Loss</div>
+                        <div id="stat-loss" class="stat-value">0.000</div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-title">Exploration (ε)</div>
+                        <div id="stat-epsilon" class="stat-value">0.000</div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row card">
+                    <h3>Training Progress Curves</h3>
+                    <div class="charts-wrapper">
+                        <div class="chart-container">
+                            <canvas id="rewards-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="loss-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Render LaTeX equation -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

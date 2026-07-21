@@ -1,0 +1,11 @@
+gymnasium>=1.0.0
+torch
+numpy
+matplotlib
+pygame-ce
+ipykernel
+jupyter
+fastapi
+uvicorn
+websockets
+
