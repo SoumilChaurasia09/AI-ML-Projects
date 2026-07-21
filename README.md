@@ -30,6 +30,7 @@ This repository contains a diverse collection of computer vision, deep learning,
 
 9. **[Used Car Value Predictor](./car-value-predictor)**
    - An interactive web dashboard utilizing a Random Forest Regressor trained on the CarDekho V3 dataset to estimate used car market resale values directly from 10 technical specifications (mileage, engine cc, power, seats, age, fuel, transmission).
+   - **Render Live Link**: [https://car-value-predictor-x15x.onrender.com/](https://car-value-predictor-x15x.onrender.com/)
 
 ---
 

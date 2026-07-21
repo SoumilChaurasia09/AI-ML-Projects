@@ -2,7 +2,9 @@
 
 AutoValuate AI is a premium, machine-learning-powered used car resale value estimation dashboard. It uses a **Random Forest Regressor** trained on the **CarDekho V3 dataset** (~7,900 cleaned rows) to predict the resale price of a vehicle based on 10 structural and mechanical specifications.
 
-The application features a sleek, custom-designed **Emerald Forest Green & Gold** web interface with responsive layouts, real-time value retention gauges, currency toggles (INR/USD), and numerical count-up animations.
+**Live Render Link**: [https://car-value-predictor-x15x.onrender.com/](https://car-value-predictor-x15x.onrender.com/)
+
+The application features a sleek, custom-designed **Navy & Champagne Gold** web interface with responsive layouts, real-time value retention gauges, currency toggles (INR/USD), and numerical count-up animations.
 
 ---
 
@@ -10,7 +12,7 @@ The application features a sleek, custom-designed **Emerald Forest Green & Gold*
 - **10 ML Features**: Predicts market value using advanced inputs like **Engine Displacement (cc)**, **Max Power (bhp)**, **Fuel Economy (mileage)**, **Seating Capacity**, and usage statistics.
 - **Direct Valuation**: No need to know the original showroom price. Input the car's specifications and the model handles the valuation directly.
 - **Premium UI / Visual Design**:
-  - HSL-powered **Emerald Green & Gold** styling theme.
+  - HSL-powered **Navy & Champagne Gold** styling theme.
   - Fully responsive layout for Desktop, Tablet, and Mobile.
   - Animated gauge displaying the estimated **Value Retention Percentage**.
   - Dynamic currency converter between **INR (Lakhs)** and **USD ($)**.
