@@ -28,7 +28,7 @@ services:
     rootDir: cifar10_cnn_classifier
     dockerfilePath: Dockerfile
 
-  - type: web
+  - type: static
     name: vit-bhopal-chatbox
     env: static
     plan: free
